@@ -1,0 +1,2157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2f4f8">
+<meta name="description" content="차윤이 가족 홈 — 게임시간 통장, 학원 시간표, 저녁약속, 학교 급식·알림장">
+<title>🏠 차윤이 가족 HOME</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='88'%3E%F0%9F%8F%A0%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f2f4f8;
+  --card:#ffffff;
+  --ink:#152238;
+  --ink-2:#5a6676;
+  --ink-3:#8d99a9;
+  --blue:#2f6bf6;
+  --blue-ink:#1c4fd0;
+  --blue-soft:#eaf1ff;
+  --mint:#12b886;
+  --mint-soft:#e6f8f1;
+  --pink:#e64980;
+  --pink-soft:#fdeef4;
+  --amber:#f59f00;
+  --amber-soft:#fff6e5;
+  --indigo:#5c6bc0;
+  --indigo-soft:#eef0fb;
+  --red:#e03131;
+  --red-soft:#fff0f0;
+  --line:#e7ebf2;
+  --r-lg:24px;
+  --r-md:16px;
+  --r-sm:11px;
+  --shadow:0 8px 22px rgba(19,38,70,.06), 0 1px 2px rgba(19,38,70,.05);
+  --shadow-sm:0 2px 8px rgba(19,38,70,.05);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Noto Sans CJK KR","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","맑은 고딕",system-ui,"Segoe UI",Roboto,sans-serif;
+  font-size:16px;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:calc(88px + env(safe-area-inset-bottom));
+}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3,p{margin:0}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+.shell{max-width:880px;margin:0 auto;padding:0 16px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ---------- header ---------- */
+.app-header{padding:22px 0 14px}
+.hdr-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.09em;color:var(--ink-3);margin-bottom:7px}
+h1.title{font-size:29px;line-height:1.18;font-weight:800;letter-spacing:-.025em;word-break:keep-all}
+h1.title .home{font-weight:900}
+.school-line{margin-top:9px;color:var(--ink-2);font-size:14.5px;font-weight:600}
+.family-badge{
+  flex:0 0 auto;width:54px;height:54px;border-radius:17px;
+  background:linear-gradient(180deg,#e9eff6,#dfe7f0);
+  border:1px solid #d8e1ec;
+  display:grid;place-items:center;font-size:27px;line-height:1;
+  box-shadow:inset 0 1px 0 #fff;
+}
+.user-row{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.user-row .lbl{font-size:14.5px;color:var(--ink-2);font-weight:700}
+.select-wrap{position:relative;flex:1 1 190px;max-width:330px;min-width:0}
+.select-wrap select{
+  -webkit-appearance:none;appearance:none;width:100%;height:50px;
+  border-radius:15px;border:1px solid var(--line);background:#fff;
+  padding:0 44px 0 15px;font-size:17px;font-weight:700;letter-spacing:-.01em;
+  box-shadow:var(--shadow-sm);
+}
+.select-wrap select:focus-visible{outline:3px solid #bcd0ff;outline-offset:1px}
+.select-wrap .chev{position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:#8d99a9;font-size:12px}
+.mode-badge{
+  height:36px;display:inline-flex;align-items:center;padding:0 13px;border-radius:12px;
+  background:var(--blue-soft);color:var(--blue-ink);font-size:12.5px;font-weight:800;white-space:nowrap;
+}
+.mode-badge.parent{background:var(--amber-soft);color:#b25c00}
+
+/* ---------- views & cards ---------- */
+.view{display:none}
+.view.active{display:flex;flex-direction:column;gap:14px;padding-bottom:8px}
+.card{
+  background:var(--card);border-radius:var(--r-lg);padding:18px;
+  box-shadow:var(--shadow);border:1px solid rgba(231,235,242,.85);
+}
+.card.flat{box-shadow:none}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.card-head h2{font-size:17px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:7px}
+.card-eyebrow{font-size:13px;font-weight:700;color:var(--ink-2);display:flex;align-items:center;gap:5px}
+.chip{
+  display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 9px;border-radius:9px;
+  background:#f1f4f9;color:var(--ink-2);font-size:12px;font-weight:700;white-space:nowrap;
+}
+.chip.blue{background:var(--blue-soft);color:var(--blue-ink)}
+.chip.mint{background:var(--mint-soft);color:#0b8a63}
+.chip.pink{background:var(--pink-soft);color:#bd2f63}
+.chip.amber{background:var(--amber-soft);color:#b25c00}
+.chip.red{background:var(--red-soft);color:#c92a2a}
+.chip.indigo{background:var(--indigo-soft);color:#3f4d9e}
+.chip.gray{background:#f1f4f9;color:#5a6676}
+.muted{color:var(--ink-3);font-size:13px}
+.tiny{font-size:12px}
+
+/* hero (game bank) */
+.hero{
+  background:linear-gradient(135deg,#eef4ff 0%,#f2f0ff 55%,#f6f4ff 100%);
+  border:1px solid #e2eaff;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;
+}
+.hero .big{font-size:44px;font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-top:2px}
+.hero .big .u{font-size:22px;font-weight:800;margin-left:3px;color:var(--ink-2)}
+.hero .sub{margin-top:9px;font-size:13px;color:var(--ink-2);font-weight:600}
+.hero .big.warn{color:var(--red)}
+.hero > .btn{margin-left:auto}
+
+/* stat cards */
+.stat .num{font-size:26px;font-weight:900;letter-spacing:-.03em;margin-top:4px}
+.stat .num.small{font-size:18px;line-height:1.35;margin-top:6px;word-break:keep-all}
+.stat .sub{margin-top:4px;font-size:12.5px;color:var(--ink-3);font-weight:600}
+
+/* buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  height:46px;padding:0 18px;border-radius:14px;border:1px solid transparent;
+  font-size:15px;font-weight:800;letter-spacing:-.01em;background:#f1f4f9;color:var(--ink);
+  transition:transform .06s ease,filter .15s ease;
+}
+.btn:active{transform:scale(.985)}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 6px 16px rgba(47,107,246,.28)}
+.btn-primary:hover{filter:brightness(1.04)}
+.btn-soft{background:var(--blue-soft);color:var(--blue-ink)}
+.btn-ghost{background:#fff;border-color:var(--line);color:var(--ink-2);box-shadow:var(--shadow-sm)}
+.btn-danger{background:var(--red-soft);color:#c92a2a}
+.btn-sm{height:36px;padding:0 12px;border-radius:11px;font-size:13px}
+.btn-wide{width:100%;margin-top:14px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn-amount{flex:1 1 0;min-width:84px;flex-direction:column;height:58px;gap:1px;background:#f6f8fc;border:1px solid var(--line)}
+.btn-amount b{font-size:17px;font-weight:900}
+.btn-amount span{font-size:11px;color:var(--ink-3);font-weight:700}
+
+/* forms */
+.form-grid{display:grid;gap:10px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field > label,.field > .flabel{font-size:12.5px;font-weight:800;color:var(--ink-2)}
+input[type=text],input[type=number],input[type=date],input[type=time],select,textarea{
+  width:100%;min-height:46px;border-radius:13px;border:1px solid var(--line);background:#fff;
+  padding:10px 13px;font-size:15px;font-weight:600;color:var(--ink);
+}
+textarea{min-height:92px;resize:vertical;line-height:1.5}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #bcd0ff;outline-offset:1px;border-color:#bcd0ff}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.day-picker{display:flex;gap:6px;flex-wrap:wrap}
+.day-picker label{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:#fff;
+  font-size:13.5px;font-weight:800;color:var(--ink-2);cursor:pointer;user-select:none;
+}
+.day-picker input{position:absolute;opacity:0;width:0;height:0}
+.day-picker input:checked + span{color:#fff}
+.day-picker label:has(input:checked),.day-picker label.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.segmented{display:flex;gap:6px;background:#f1f4f9;border-radius:13px;padding:4px}
+.segmented label{flex:1;text-align:center;cursor:pointer}
+.segmented input{position:absolute;opacity:0;width:0;height:0}
+.segmented span{
+  display:block;padding:9px 4px;border-radius:10px;font-size:13.5px;font-weight:800;color:var(--ink-2);
+}
+.segmented input:checked + span{background:#fff;color:var(--ink);box-shadow:var(--shadow-sm)}
+.segmented input:focus-visible + span{outline:3px solid #bcd0ff}
+.quick-chips{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 10px}
+.quick-chips button{
+  border:1px solid var(--line);background:#f8fafd;border-radius:11px;padding:7px 11px;
+  font-size:12.5px;font-weight:700;color:var(--ink-2);
+}
+.quick-chips button:active{background:var(--blue-soft)}
+.form-hint{font-size:12px;color:var(--ink-3);font-weight:600}
+.row-inline{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+
+/* lists */
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.list-item{
+  display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:14px;background:#f8fafd;
+}
+.list-item .li-ico{
+  flex:0 0 34px;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;
+  background:#fff;font-size:16px;box-shadow:var(--shadow-sm);
+}
+.list-item .li-body{flex:1;min-width:0}
+.list-item .li-title{font-size:14.5px;font-weight:800;letter-spacing:-.01em;word-break:break-word}
+.list-item .li-sub{font-size:12.5px;color:var(--ink-3);font-weight:600;margin-top:2px}
+.list-item .li-right{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.amount{font-size:15px;font-weight:900;letter-spacing:-.02em;white-space:nowrap}
+.amount.plus{color:#0b8a63}
+.amount.minus{color:var(--red)}
+.li-balance{font-size:11.5px;color:var(--ink-3);font-weight:700;white-space:nowrap}
+.icon-btn{
+  border:0;background:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+  color:var(--ink-3);font-size:14px;box-shadow:var(--shadow-sm);
+}
+.icon-btn:hover{color:var(--red)}
+.empty{
+  padding:18px 14px;border-radius:14px;background:#f8fafd;color:var(--ink-3);
+  font-size:13.5px;font-weight:600;text-align:center;line-height:1.5;
+}
+
+/* alert banner */
+.alert{
+  display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;
+  background:var(--red-soft);border:1px solid #ffd2d2;color:#b02121;font-size:13.5px;font-weight:700;
+}
+.alert .a-ico{font-size:17px;line-height:1.2}
+.alert.info{background:var(--blue-soft);border-color:#d5e2ff;color:#1c4fd0}
+.alert.note{background:#f7f9fc;border-color:var(--line);color:var(--ink-2);font-weight:600}
+
+/* lock note */
+.lock-note{
+  display:flex;gap:10px;align-items:flex-start;padding:13px 14px;border-radius:14px;
+  background:#f8fafc;border:1px dashed #d5dde8;color:var(--ink-2);font-size:13px;font-weight:600;line-height:1.5;
+}
+.lock-note .l-ico{font-size:16px;line-height:1.25}
+.lock-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+
+/* game: timer */
+.timer-box{margin-top:14px;padding:14px;border-radius:16px;background:#f6f8fc;border:1px solid var(--line)}
+.timer-display{font-variant-numeric:tabular-nums;font-size:34px;font-weight:900;letter-spacing:-.02em;line-height:1.1}
+.timer-display small{font-size:13px;font-weight:700;color:var(--ink-3);margin-left:6px;letter-spacing:0}
+
+/* timetable */
+.week-grid{display:flex;flex-direction:column;gap:8px}
+.wk-row{display:flex;gap:10px;padding:9px 11px;border-radius:14px;background:#f8fafd;align-items:flex-start}
+.wk-row.today{background:#eef4ff;box-shadow:inset 0 0 0 1.5px #cfdeff}
+.wk-dow{flex:0 0 30px;font-size:13px;font-weight:900;color:var(--ink-2);padding-top:6px}
+.wk-row.today .wk-dow{color:var(--blue-ink)}
+.wk-items{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.wk-item{
+  background:#fff;border-radius:11px;padding:8px 11px;border-left:4px solid var(--blue);
+  box-shadow:var(--shadow-sm);font-size:14px;font-weight:800;letter-spacing:-.01em;word-break:keep-all;
+}
+.wk-item .t{display:block;font-size:11.5px;color:var(--ink-3);font-weight:700;margin-top:2px;letter-spacing:0}
+.wk-empty{font-size:12.5px;color:var(--ink-3);font-weight:600;padding:6px 0}
+.acad-list{margin-top:4px}
+
+/* calendar */
+.cal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.cal-title{font-size:17px;font-weight:900;letter-spacing:-.02em}
+.cal-nav{display:flex;gap:4px;align-items:center}
+.cal-nav button{
+  width:36px;height:36px;border-radius:11px;border:1px solid var(--line);background:#fff;
+  font-size:15px;font-weight:800;color:var(--ink-2);display:grid;place-items:center;
+}
+.cal-nav .today-btn{width:auto;padding:0 11px;font-size:12.5px}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.cal-dow{text-align:center;font-size:11px;font-weight:900;color:var(--ink-3);padding:2px 0 3px}
+.cal-dow.sun{color:#d9480f}
+.cal-dow.sat{color:#1c7ed6}
+.cal-day{
+  position:relative;min-height:54px;border-radius:13px;border:1px solid transparent;background:#f7f9fc;
+  display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px 5px;
+  font-size:13px;font-weight:800;color:var(--ink);letter-spacing:-.01em;
+}
+.cal-day.empty{background:transparent;border:0;cursor:default}
+.cal-day.today{border-color:#bcd0ff;background:#f2f6ff;color:var(--blue-ink)}
+.cal-day.sel{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 6px 14px rgba(47,107,246,.3)}
+.cal-day.overlap:not(.sel){box-shadow:inset 0 0 0 2px #ffbdbd;background:#fff5f5}
+.cal-day .dots{display:flex;gap:2.5px;flex-wrap:wrap;justify-content:center;min-height:6px}
+.cal-day .dot{width:5px;height:5px;border-radius:50%}
+.dot.mom{background:#f06595}
+.dot.dad{background:#4dabf7}
+.dot.both{background:#12b886}
+.cal-day.sel .dot{box-shadow:0 0 0 1px rgba(255,255,255,.9)}
+.cal-day .warn{font-size:10px;line-height:1;position:absolute;top:3px;right:3px}
+.cal-day.sel .warn{filter:brightness(1.2)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:11.5px;color:var(--ink-3);font-weight:700}
+.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}
+.day-detail-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+
+/* school */
+.meal-dishes{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.meal-dish{
+  background:#f8fafd;border:1px solid var(--line);border-radius:10px;padding:6px 10px;
+  font-size:13.5px;font-weight:700;color:var(--ink);
+}
+.meal-dish .alg{font-size:10px;color:var(--ink-3);font-weight:700;margin-left:3px;vertical-align:2px}
+.meal-row{display:flex;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+.meal-row:first-child{border-top:0}
+.meal-row .d{flex:0 0 58px;font-size:12.5px;font-weight:800;color:var(--ink-2)}
+.meal-row .d small{display:block;font-size:11px;color:var(--ink-3);font-weight:700;margin-top:2px}
+.meal-row .m{flex:1;min-width:0;font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.55}
+.meal-row.off .m{color:var(--ink-3)}
+.school-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+details.more{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+details.more summary{font-size:12.5px;font-weight:800;color:var(--ink-2);cursor:pointer}
+details.more .nut{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;line-height:1.55}
+.notice{border-radius:14px;background:#f8fafd;padding:12px 13px}
+.notice + .notice{margin-top:8px}
+.notice .n-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.notice .n-title{font-size:14.5px;font-weight:800;letter-spacing:-.01em}
+.notice .n-meta{font-size:11.5px;color:var(--ink-3);font-weight:700}
+.notice .n-body{font-size:13.5px;color:var(--ink-2);font-weight:600;margin-top:6px;white-space:pre-wrap;line-height:1.55;word-break:break-word}
+.notice .n-foot{display:flex;justify-content:flex-end;margin-top:6px}
+
+/* settings */
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.set-row:first-of-type{border-top:0;padding-top:0}
+.set-row .s-label{font-size:14px;font-weight:800}
+.set-row .s-desc{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:2px}
+
+/* tabbar */
+.tabbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);
+  padding:6px 0 calc(6px + env(safe-area-inset-bottom));
+}
+.tabbar .inner{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;max-width:880px;margin:0 auto;padding:0 8px}
+.tab{
+  border:0;background:none;padding:6px 1px 5px;border-radius:13px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:#8d99a9;font-size:11px;font-weight:800;letter-spacing:-.02em;
+}
+.tab .ico{font-size:20px;line-height:1}
+.tab.active{color:var(--blue);background:var(--blue-soft)}
+
+/* toast */
+.toast{
+  position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translate(-50%,12px);
+  max-width:min(92vw,440px);padding:12px 16px;border-radius:14px;background:#1d2735;color:#fff;
+  font-size:13.5px;font-weight:700;box-shadow:0 12px 30px rgba(15,25,40,.28);
+  opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;z-index:80;text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* timer pill */
+.timer-pill[hidden]{display:none}
+.timer-pill{
+  position:fixed;right:14px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:45;
+  display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:999px;
+  background:#1d2735;color:#fff;font-size:12.5px;font-weight:800;box-shadow:0 10px 26px rgba(15,25,40,.3);
+  border:0;font-variant-numeric:tabular-nums;
+}
+
+/* modal */
+.modal[hidden]{display:none}
+.modal{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center}
+.modal-backdrop{position:absolute;inset:0;background:rgba(14,22,36,.45);backdrop-filter:blur(2px)}
+.modal-card{
+  position:relative;z-index:1;width:100%;max-width:420px;background:#fff;
+  border-radius:26px 26px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));
+  box-shadow:0 -12px 40px rgba(14,22,36,.25);animation:sheet-up .2s ease-out;
+}
+@keyframes sheet-up{from{transform:translateY(22px)}to{transform:translateY(0)}}
+.modal-card h3{font-size:19px;font-weight:900;letter-spacing:-.02em;text-align:center}
+.modal-card .m-sub{font-size:13px;color:var(--ink-3);font-weight:600;text-align:center;margin-top:6px;line-height:1.5}
+.pin-dots{display:flex;justify-content:center;gap:12px;margin:20px 0 4px}
+.pin-dots .dot{
+  width:15px;height:15px;border-radius:50%;background:#e9edf4;box-shadow:inset 0 0 0 1px #dde3ec;transition:background .12s,transform .12s;
+}
+.pin-dots .dot.on{background:var(--blue);box-shadow:none;transform:scale(1.05)}
+.pin-dots.shake{animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+.pin-msg{min-height:18px;text-align:center;font-size:12.5px;font-weight:800;color:var(--red);margin:8px 0 4px}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.keypad button{
+  height:56px;border-radius:16px;border:1px solid var(--line);background:#f8fafd;
+  font-size:21px;font-weight:800;color:var(--ink);
+}
+.keypad button:active{background:#eef2f8}
+.keypad button.ghost{background:#fff;color:var(--ink-3);font-size:16px}
+.modal-actions{display:flex;gap:8px;margin-top:12px}
+.modal-actions .btn{flex:1}
+@media (min-width:520px){
+  .modal{align-items:center}
+  .modal-card{border-radius:26px;padding-bottom:22px}
+}
+
+/* tablet */
+#view-home.active{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+#view-home .span-2,#view-home .md-span{grid-column:1 / -1}
+@media (min-width:680px){
+  h1.title{font-size:33px}
+  #view-home .md-span{grid-column:auto}
+  .card{padding:20px}
+  .two-col{grid-template-columns:1fr 1fr}
+}
+@media (min-width:900px){
+  .shell{padding:0 24px}
+}
+</style>
+</head>
+<body>
+<noscript><div style="padding:24px;text-align:center;font-weight:700">이 페이지는 자바스크립트가 필요합니다.</div></noscript>
+<div class="shell">
+  <header class="app-header">
+    <div class="hdr-row">
+      <div>
+        <p class="eyebrow">OUR FAMILY SPACE</p>
+        <h1 class="title">🏠 차윤이 가족 <span class="home">HOME</span></h1>
+        <p class="school-line">북성초등학교 · 4학년 7반</p>
+      </div>
+      <div class="family-badge" aria-hidden="true">👨‍👩‍👦</div>
+    </div>
+    <div class="user-row">
+      <label class="lbl" for="userSelect">사용자</label>
+      <div class="select-wrap">
+        <select id="userSelect" aria-label="사용자 선택">
+          <option value="child">👦 차윤이</option>
+          <option value="mom">👩 엄마</option>
+          <option value="dad">👨 아빠</option>
+        </select>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <span class="mode-badge" id="modeBadge">차윤이 모드</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ 홈 ============ -->
+    <section class="view active" id="view-home" data-view="home" aria-label="홈">
+      <article class="card hero span-2">
+        <div>
+          <p class="card-eyebrow">🎮 사용 가능한 게임시간</p>
+          <p class="big" id="homeBalance">150<span class="u">분</span></p>
+          <p class="sub" id="homeBalanceSub">하루 기본 0분 · 남은 시간은 다음 날로 이월</p>
+        </div>
+        <button class="btn btn-primary" data-action="goto" data-tab="game">게임 통장</button>
+      </article>
+
+      <article class="card stat">
+        <p class="card-eyebrow">오늘 게임 사용</p>
+        <p class="num" id="homeUsedToday">0분</p>
+        <p class="sub" id="homeUsedTodaySub">잔액에서 차감된 시간</p>
+      </article>
+
+      <article class="card stat">
+        <p class="card-eyebrow">다음 학원</p>
+        <p class="num small" id="homeNextAcademy">—</p>
+        <p class="sub" id="homeNextAcademySub"></p>
+      </article>
+
+      <article class="card md-span">
+        <header class="card-head">
+          <h2>📅 오늘 일정</h2>
+          <span class="chip" id="homeTodayChip">오늘</span>
+        </header>
+        <div id="homeTodayList"></div>
+      </article>
+
+      <article class="card md-span">
+        <header class="card-head">
+          <h2>🍱 오늘 학교 급식</h2>
+          <span class="chip" id="homeMealCal"></span>
+        </header>
+        <div id="homeMeal"></div>
+        <button class="btn btn-ghost btn-wide" data-action="goto" data-tab="school">급식 · 알림장 보기</button>
+      </article>
+    </section>
+
+    <!-- ============ 게임 ============ -->
+    <section class="view" id="view-game" data-view="game" aria-label="게임시간 통장">
+      <article class="card hero">
+        <div>
+          <p class="card-eyebrow">🎮 게임시간 통장</p>
+          <p class="big" id="gameBalance">150<span class="u">분</span></p>
+          <p class="sub" id="gameSub">하루 기본 0분 · 이월 적립형</p>
+        </div>
+        <div style="text-align:right">
+          <p class="chip blue" id="gameTodayChip">오늘 0분 사용</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <header class="card-head">
+          <h2>👦 차윤이 · 시간 꺼내 쓰기</h2>
+          <span class="chip mint" id="gameBalanceChip">잔액 150분</span>
+        </header>
+        <div class="btn-row" style="margin-bottom:10px">
+          <button class="btn btn-amount" data-action="deduct" data-min="10"><b>10분</b><span>꺼내 쓰기</span></button>
+          <button class="btn btn-amount" data-action="deduct" data-min="30"><b>30분</b><span>꺼내 쓰기</span></button>
+          <button class="btn btn-amount" data-action="toggle-custom"><b>직접</b><span>분 직접 입력</span></button>
+        </div>
+        <div class="row-inline" id="customDeductRow" hidden>
+          <div class="field" style="flex:1">
+            <label for="customMin">차감할 시간(분)</label>
+            <input type="number" id="customMin" min="1" step="1" inputmode="numeric" placeholder="예: 20">
+          </div>
+          <button class="btn btn-primary" data-action="deduct-custom">차감</button>
+        </div>
+
+        <div class="timer-box">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <div>
+              <p class="card-eyebrow">⏱ 타이머로 사용하기</p>
+              <p class="timer-display" id="timerDisplay">00:00<small id="timerNote">대기 중</small></p>
+            </div>
+            <div class="btn-row" id="timerButtons"></div>
+          </div>
+          <div class="quick-chips" id="timerPresets" style="margin-top:12px;margin-bottom:0"></div>
+        </div>
+        <p class="form-hint" style="margin-top:10px">게임을 켤 때 타이머를 시작하고, 그만할 때 종료를 누르면 실제 사용한 만큼만 차감돼요. (분 단위 올림, 잔액 한도)</p>
+      </article>
+
+      <article class="card">
+        <header class="card-head">
+          <h2>👩‍👦 부모 · 인센티브 적립</h2>
+          <span class="chip" id="incentiveWhoChip">🔒 잠금</span>
+        </header>
+        <div id="incentiveBody"></div>
+      </article>
+
+      <article class="card">
+        <header class="card-head">
+          <h2>📜 입출금 내역</h2>
+          <span class="chip gray" id="ledgerCount">0건</span>
+        </header>
+        <ul class="list" id="ledgerList"></ul>
+      </article>
+    </section>
+
+    <!-- ============ 시간표 ============ -->
+    <section class="view" id="view-timetable" data-view="timetable" aria-label="학원 시간표">
+      <article class="card">
+        <header class="card-head">
+          <h2>🗓️ 주간 학원 시간표</h2>
+          <span class="chip blue" id="timetableTermChip">이번 주</span>
+        </header>
+        <div class="week-grid" id="weekGrid"></div>
+      </article>
+
+      <article class="card">
+        <header class="card-head">
+          <h2>📚 등록된 학원</h2>
+          <span class="chip gray" id="academyCount">0개</span>
+        </header>
+        <ul class="list acad-list" id="academyList"></ul>
+        <div id="academyFormArea" style="margin-top:14px"></div>
+      </article>
+    </section>
+
+    <!-- ============ 저녁약속 ============ -->
+    <section class="view" id="view-schedule" data-view="schedule" aria-label="저녁약속·야근 캘린더">
+      <article class="card">
+        <div class="cal-head">
+          <p class="cal-title" id="calTitle">2026년 11월</p>
+          <div class="cal-nav">
+            <button data-action="cal-prev" aria-label="이전 달">‹</button>
+            <button data-action="cal-next" aria-label="다음 달">›</button>
+            <button class="today-btn" data-action="cal-today">오늘</button>
+          </div>
+        </div>
+        <div class="cal" id="calGrid">
+          <div class="cal-dow sun">일</div><div class="cal-dow">월</div><div class="cal-dow">화</div>
+          <div class="cal-dow">수</div><div class="cal-dow">목</div><div class="cal-dow">금</div>
+          <div class="cal-dow sat">토</div>
+        </div>
+        <div class="legend">
+          <span><i class="dot mom" style="position:static"></i>엄마</span>
+          <span><i class="dot dad" style="position:static"></i>아빠</span>
+          <span><i class="dot both" style="position:static"></i>함께</span>
+          <span>⚠️ 엄마·아빠 일정 겹침</span>
+        </div>
+        <div id="calOverlapNote" style="margin-top:12px"></div>
+      </article>
+
+      <article class="card">
+        <div class="day-detail-head">
+          <h2 id="dayDetailTitle">11월 17일 (화)</h2>
+          <span class="chip" id="dayDetailChip"></span>
+        </div>
+        <div id="dayDetailList"></div>
+        <div id="eventFormArea" style="margin-top:14px"></div>
+      </article>
+    </section>
+
+    <!-- ============ 학교 ============ -->
+    <section class="view" id="view-school" data-view="school" aria-label="학교 급식·알림장">
+      <article class="card">
+        <header class="card-head">
+          <h2>🍱 오늘 급식</h2>
+          <button class="btn btn-sm btn-ghost" data-action="meal-refresh">새로고침</button>
+        </header>
+        <div id="todayMeal"></div>
+        <div class="school-links">
+          <a class="btn btn-sm btn-ghost" href="https://open.neis.go.kr" target="_blank" rel="noopener">나이스 급식 정보</a>
+          <a class="btn btn-sm btn-ghost" href="http://seoulbuksung.sen.es.kr" target="_blank" rel="noopener">북성초 홈페이지</a>
+        </div>
+        <p class="form-hint" id="mealStatus" style="margin-top:10px"></p>
+      </article>
+
+      <article class="card">
+        <header class="card-head">
+          <h2>📆 이번 주 급식</h2>
+          <span class="chip gray" id="mealWeekChip"></span>
+        </header>
+        <div id="weekMeal"></div>
+      </article>
+
+      <article class="card">
+        <header class="card-head">
+          <h2>📝 알림장 · 4학년 7반</h2>
+          <span class="chip gray" id="noticeCount">0건</span>
+        </header>
+        <div id="noticeList"></div>
+        <div id="noticeFormArea" style="margin-top:14px"></div>
+        <p class="form-hint" style="margin-top:10px">
+          같은 폴더의 <code>notices.json</code> 파일을 자동으로 불러옵니다. 형식:
+          <code>{"notices":[{"date":"2026-11-17","title":"제목","body":"내용","author":"담임"}]}</code>
+        </p>
+      </article>
+    </section>
+
+    <!-- ============ 설정 ============ -->
+    <section class="view" id="view-settings" data-view="settings" aria-label="설정">
+      <article class="card">
+        <header class="card-head"><h2>🔐 부모 모드 · PIN</h2><span class="chip" id="settingsModeChip"></span></header>
+        <div class="set-row">
+          <div>
+            <p class="s-label">4자리 PIN</p>
+            <p class="s-desc" id="pinDesc">기본값 0000 · 부모 모드에서 변경할 수 있어요</p>
+          </div>
+          <button class="btn btn-sm btn-soft" data-action="pin-change">PIN 변경</button>
+        </div>
+        <div class="set-row">
+          <div>
+            <p class="s-label">차윤이 모드 잠금</p>
+            <p class="s-desc">인센티브 적립·수정은 부모 모드(PIN)에서만 가능합니다.</p>
+          </div>
+          <span class="chip mint">적용 중</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <header class="card-head"><h2>💾 데이터 백업 · 복원</h2></header>
+        <p class="muted">게임시간 통장, 시간표, 저녁약속, 알림장이 모두 이 브라우저(localStorage)에 저장됩니다. JSON으로 내려받아 다른 기기에서 복원할 수 있어요.</p>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn btn-soft" data-action="export">JSON 내보내기</button>
+          <button class="btn btn-ghost" data-action="import">JSON 가져오기</button>
+          <button class="btn btn-danger" data-action="reset">초기화</button>
+        </div>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+        <p class="form-hint" id="storageInfo" style="margin-top:10px"></p>
+      </article>
+
+      <article class="card">
+        <header class="card-head"><h2>☁️ 동기화 (준비 중)</h2><span class="chip amber">Coming soon</span></header>
+        <p class="muted">지금은 기기 안에만 저장됩니다. 가족이 각자 폰에서 같은 데이터를 보려면 아래 중 하나로 연결하면 됩니다.</p>
+        <ul class="list" style="margin-top:12px">
+          <li class="list-item">
+            <div class="li-ico">🔥</div>
+            <div class="li-body"><p class="li-title">Firebase Realtime Database</p><p class="li-sub">무료 Spark 요금제 · 실시간 반영 · 설정 간단</p></div>
+            <div class="li-right"><span class="chip gray">미연결</span></div>
+          </li>
+          <li class="list-item">
+            <div class="li-ico">🟢</div>
+            <div class="li-body"><p class="li-title">Supabase</p><p class="li-sub">Postgres 기반 · 무료 티어 · 이메일 로그인</p></div>
+            <div class="li-right"><span class="chip gray">미연결</span></div>
+          </li>
+          <li class="list-item">
+            <div class="li-ico">🐙</div>
+            <div class="li-body"><p class="li-title">GitHub JSON 동기화</p><p class="li-sub">이 저장소에 data.json 커밋 · GitHub Pages로 즉시 반영</p></div>
+            <div class="li-right"><span class="chip gray">미연결</span></div>
+          </li>
+        </ul>
+        <p class="form-hint" style="margin-top:12px">연결 전까지는 ‘JSON 내보내기 → 다른 기기에서 가져오기’로 데이터를 옮길 수 있어요.</p>
+      </article>
+
+      <article class="card">
+        <header class="card-head"><h2>ℹ️ 앱 정보</h2></header>
+        <div class="set-row"><div><p class="s-label">학교</p><p class="s-desc">서울북성초등학교 (서울특별시교육청) · 나이스 코드 B10 / 7031127</p></div></div>
+        <div class="set-row"><div><p class="s-label">급식 데이터</p><p class="s-desc">나이스 교육정보 개방 포털 Open API (키 없이 조회)</p></div></div>
+        <div class="set-row"><div><p class="s-label">버전</p><p class="s-desc" id="appVersion">v1.0</p></div></div>
+      </article>
+    </section>
+  </main>
+</div>
+
+<nav class="tabbar" aria-label="메인 메뉴">
+  <div class="inner">
+    <button class="tab active" data-action="goto" data-tab="home"><span class="ico">🏠</span>홈</button>
+    <button class="tab" data-action="goto" data-tab="game"><span class="ico">🎮</span>게임</button>
+    <button class="tab" data-action="goto" data-tab="timetable"><span class="ico">📅</span>시간표</button>
+    <button class="tab" data-action="goto" data-tab="schedule"><span class="ico">🌙</span>저녁약속</button>
+    <button class="tab" data-action="goto" data-tab="school"><span class="ico">🍱</span>학교</button>
+    <button class="tab" data-action="goto" data-tab="settings"><span class="ico">⚙️</span>설정</button>
+  </div>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<button class="timer-pill" id="timerPill" hidden data-action="goto" data-tab="game">⏱ <span id="timerPillText">00:00</span></button>
+
+<!-- PIN / confirm modal -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-backdrop" data-action="modal-cancel"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h3 id="modalTitle">부모 모드</h3>
+    <p class="m-sub" id="modalSub">4자리 PIN을 입력해 주세요</p>
+    <div id="modalPin">
+      <div class="pin-dots" id="pinDots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      <p class="pin-msg" id="pinMsg"></p>
+      <div class="keypad" id="keypad">
+        <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
+        <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
+        <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+        <button class="ghost" data-key="cancel">취소</button><button data-key="0">0</button><button class="ghost" data-key="del">⌫</button>
+      </div>
+    </div>
+    <div id="modalConfirm" hidden>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" data-action="modal-cancel">취소</button>
+        <button class="btn btn-primary" id="confirmOk">확인</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  'use strict';
+
+  /* =========================================================
+     차윤이 가족 HOME — 단일 파일 웹앱
+     데이터는 이 브라우저의 localStorage 에만 저장됩니다.
+     ========================================================= */
+
+  var VERSION = '1.0';
+  var LS_KEY = 'chaYunFamilyHome.v1';
+
+  /* 서울북성초등학교(서울특별시교육청) — 나이스 Open API 조회로 확인
+     ATPT_OFCDC_SC_CODE=B10 / SD_SCHUL_CODE=7031127 (2026-11-17 확인) */
+  var SCHOOL = { office: 'B10', code: '7031127', name: '서울북성초등학교' };
+  var NEIS_MEAL = 'https://open.neis.go.kr/hub/mealServiceDietInfo';
+
+  var DOW = ['일', '월', '화', '수', '목', '금', '토'];
+  var TYPES = {
+    dinner: { label: '저녁약속', emoji: '🍽️', tone: 'pink' },
+    overtime: { label: '야근', emoji: '🌙', tone: 'indigo' },
+    family: { label: '가족일정', emoji: '👨‍👩‍👦', tone: 'mint' },
+    etc: { label: '기타', emoji: '📌', tone: 'gray' }
+  };
+  var WHO = {
+    mom: { label: '엄마', emoji: '👩', dot: 'mom' },
+    dad: { label: '아빠', emoji: '👨', dot: 'dad' },
+    both: { label: '함께', emoji: '👨‍👩‍👦', dot: 'both' },
+    child: { label: '차윤이', emoji: '👦', dot: 'child' },
+    system: { label: '시스템', emoji: '⚙️', dot: 'system' }
+  };
+  var LATE_TYPES = ['dinner', 'overtime'];
+
+  /* ---------------- 유틸 ---------------- */
+  function $(id) { return document.getElementById(id); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function pad2(n) { return String(n).padStart(2, '0'); }
+  function ymd(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+  function ymdCompact(d) { return String(d.getFullYear()) + pad2(d.getMonth() + 1) + pad2(d.getDate()); }
+  function monthKey(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1); }
+  function parseYmd(s) { var p = String(s).split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); }
+  function hmToMin(t) { if (!t) return null; var p = String(t).split(':').map(Number); return p[0] * 60 + (p[1] || 0); }
+  function nowMin(d) { return d.getHours() * 60 + d.getMinutes(); }
+  function fmtMinutes(m) {
+    m = Number(m) || 0;
+    var h = Math.floor(m / 60), mm = m % 60;
+    if (h && mm) return h + '시간 ' + mm + '분';
+    if (h) return h + '시간';
+    return mm + '분';
+  }
+  function fmtDateTime(ts) {
+    var d = new Date(ts);
+    return ymd(d) + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+  function fmtShort(ts) {
+    var d = new Date(ts);
+    return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+  function fmtClock(ms) {
+    var s = Math.max(0, Math.floor(ms / 1000));
+    return pad2(Math.floor(s / 60)) + ':' + pad2(s % 60);
+  }
+  function uid() { return Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4); }
+  function daysLabel(days) {
+    if (!days || !days.length) return '요일 없음';
+    return days.slice().sort().map(function (d) { return DOW[d]; }).join('·');
+  }
+  function safeText(v) { return String(v == null ? '' : v).trim(); }
+
+  /* ---------------- 상태 ---------------- */
+  function defaultState() {
+    var now = new Date();
+    return {
+      version: 1,
+      createdAt: new Date().toISOString(),
+      pin: '0000',
+      bank: {
+        dailyBase: 0,
+        balance: 150,
+        ledger: [{
+          id: uid(), ts: Date.now(), who: 'system', kind: 'init',
+          reason: '시작 잔액 (2시간 30분)', delta: 150, balanceAfter: 150
+        }]
+      },
+      academies: [
+        { id: uid(), name: '수영', days: [1, 3, 5], start: '17:00', end: '18:00', place: '수영장' },
+        { id: uid(), name: '영어학원', days: [2, 4], start: '16:00', end: '18:30', place: '' }
+      ],
+      events: [],
+      notices: [],
+      meals: {},
+      ui: { calMonth: monthKey(now), selDate: ymd(now) }
+    };
+  }
+
+  function normalize(base, s) {
+    if (!s || typeof s !== 'object') return base;
+    var out = Object.assign({}, base, s);
+    out.bank = Object.assign({}, base.bank, s.bank || {});
+    out.ui = Object.assign({}, base.ui, s.ui || {});
+    if (!Array.isArray(out.bank.ledger)) out.bank.ledger = [];
+    if (typeof out.bank.balance !== 'number' || !isFinite(out.bank.balance)) out.bank.balance = 0;
+    if (typeof out.bank.dailyBase !== 'number' || !isFinite(out.bank.dailyBase)) out.bank.dailyBase = 0;
+    if (!Array.isArray(out.academies)) out.academies = base.academies;
+    if (!Array.isArray(out.events)) out.events = [];
+    if (!Array.isArray(out.notices)) out.notices = [];
+    if (!out.meals || typeof out.meals !== 'object') out.meals = {};
+    if (typeof out.pin !== 'string' || !/^\d{4}$/.test(out.pin)) out.pin = '0000';
+    if (!out.ui.calMonth) out.ui.calMonth = monthKey(new Date());
+    if (!out.ui.selDate) out.ui.selDate = ymd(new Date());
+    return out;
+  }
+
+  function loadState() {
+    var base = defaultState();
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      if (!raw) return base;
+      return normalize(base, JSON.parse(raw));
+    } catch (e) {
+      return base;
+    }
+  }
+  function save() {
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify(state));
+    } catch (e) {
+      toast('저장에 실패했어요. 브라우저 저장 공간을 확인해 주세요.');
+    }
+  }
+
+  var state = loadState();
+  var session = { user: 'child', tab: 'home' };
+  var timer = { phase: 'idle', limit: 0, elapsed: 0, lastTs: 0, handle: null };
+  var modalReq = null;
+  var mealMeta = { loading: false, error: null, lastAt: null };
+
+  function isParent() { return session.user === 'mom' || session.user === 'dad'; }
+  function meLabel() { return (WHO[session.user] || WHO.child).label; }
+
+  /* ---------------- 토스트 ---------------- */
+  var toastTimer = null;
+  function toast(msg) {
+    var el = $('toast');
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2400);
+  }
+
+  /* ---------------- 모달 (PIN / 확인) ---------------- */
+  function openSheet() { $('modal').hidden = false; }
+  function closeSheet() { $('modal').hidden = true; }
+
+  function askPin(opts) {
+    return new Promise(function (resolve) {
+      modalReq = { type: 'pin', resolve: resolve, value: '', verify: opts.verify || null };
+      $('modalTitle').textContent = opts.title || '부모 모드';
+      $('modalSub').textContent = opts.sub || '4자리 PIN을 입력해 주세요';
+      $('modalPin').hidden = false;
+      $('modalConfirm').hidden = true;
+      $('pinMsg').textContent = '';
+      paintPin();
+      openSheet();
+    });
+  }
+
+  function askConfirm(opts) {
+    return new Promise(function (resolve) {
+      modalReq = { type: 'confirm', resolve: resolve };
+      $('modalTitle').textContent = opts.title || '확인';
+      $('modalSub').textContent = opts.body || '';
+      $('modalPin').hidden = true;
+      $('modalConfirm').hidden = false;
+      var ok = $('confirmOk');
+      ok.textContent = opts.ok || '확인';
+      ok.className = 'btn ' + (opts.danger ? 'btn-danger' : 'btn-primary');
+      openSheet();
+    });
+  }
+
+  function paintPin() {
+    var dots = $('pinDots').children;
+    var len = modalReq && modalReq.value ? modalReq.value.length : 0;
+    for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('on', i < len);
+  }
+
+  function pinReject(msg) {
+    $('pinMsg').textContent = msg;
+    var d = $('pinDots');
+    d.classList.remove('shake');
+    void d.offsetWidth;
+    d.classList.add('shake');
+    if (modalReq) modalReq.value = '';
+    paintPin();
+  }
+
+  function finishModal(result) {
+    var req = modalReq;
+    modalReq = null;
+    closeSheet();
+    if (req && req.resolve) req.resolve(result);
+  }
+
+  function handleKey(key) {
+    if (!modalReq || modalReq.type !== 'pin') return;
+    if (key === 'cancel') { finishModal(null); return; }
+    if (key === 'del') { modalReq.value = modalReq.value.slice(0, -1); $('pinMsg').textContent = ''; paintPin(); return; }
+    if (modalReq.value.length >= 4) return;
+    modalReq.value += key;
+    $('pinMsg').textContent = '';
+    paintPin();
+    if (modalReq.value.length === 4) {
+      var v = modalReq.value;
+      setTimeout(function () {
+        if (!modalReq || modalReq.type !== 'pin' || modalReq.value !== v) return;
+        if (modalReq.verify) {
+          if (modalReq.verify(v)) finishModal(v);
+          else pinReject('PIN이 맞지 않아요');
+        } else {
+          finishModal(v);
+        }
+      }, 90);
+    }
+  }
+
+  /* ---------------- 사용자 / 모드 ---------------- */
+  function switchUser(next) {
+    if (next === session.user) { renderHeader(); return; }
+    if (next === 'child') {
+      session.user = 'child';
+      renderAll();
+      toast('차윤이 모드로 돌아왔어요');
+      return;
+    }
+    var who = next === 'mom' ? '엄마' : '아빠';
+    askPin({
+      title: who + ' 모드',
+      sub: '부모님 4자리 PIN을 입력해 주세요',
+      verify: function (v) { return v === state.pin; }
+    }).then(function (v) {
+      if (v === null) { renderHeader(); return; }
+      session.user = next;
+      renderAll();
+      toast(who + ' 모드로 전환했어요');
+    });
+  }
+
+  function askParentMode(who) {
+    switchUser(who);
+  }
+
+  function requireParent(msg) {
+    if (isParent()) return true;
+    toast(msg || '부모 모드에서만 할 수 있어요');
+    return false;
+  }
+
+  /* ---------------- 게임시간 통장 ---------------- */
+  function entryKind(e) {
+    if (e.kind) return e.kind;
+    return e.delta < 0 ? 'use' : 'bonus';
+  }
+
+  function todayUsedMinutes() {
+    var key = ymd(new Date());
+    return state.bank.ledger.reduce(function (sum, e) {
+      if (entryKind(e) !== 'use') return sum;
+      if (ymd(new Date(e.ts)) !== key) return sum;
+      return sum + Math.abs(e.delta);
+    }, 0);
+  }
+
+  function pushLedger(kind, delta, reason) {
+    state.bank.ledger.unshift({
+      id: uid(),
+      ts: Date.now(),
+      who: session.user,
+      kind: kind,
+      reason: reason,
+      delta: delta,
+      balanceAfter: state.bank.balance
+    });
+    if (state.bank.ledger.length > 500) state.bank.ledger.length = 500;
+  }
+
+  function deduct(minutes, reason, kind) {
+    minutes = Math.floor(Number(minutes));
+    if (!isFinite(minutes) || minutes <= 0) { toast('1분 이상 입력해 주세요'); return false; }
+    if (state.bank.balance < minutes) {
+      toast('잔액이 부족해요 (현재 ' + state.bank.balance + '분)');
+      return false;
+    }
+    state.bank.balance -= minutes;
+    pushLedger(kind || 'use', -minutes, reason || '게임 시간 사용');
+    save();
+    renderAll();
+    return true;
+  }
+
+  function addBonus(minutes, reason) {
+    minutes = Math.floor(Number(minutes));
+    if (!isFinite(minutes) || minutes <= 0) { toast('1분 이상 입력해 주세요'); return false; }
+    state.bank.balance += minutes;
+    pushLedger('bonus', minutes, reason || '인센티브 적립');
+    save();
+    renderAll();
+    return true;
+  }
+
+  /* ---------------- 타이머 ---------------- */
+  function timerStart(limit) {
+    if (timer.phase !== 'idle') { toast('이미 타이머가 돌고 있어요'); return; }
+    if (state.bank.balance <= 0) { toast('게임시간 잔액이 없어요'); return; }
+    var lim = Math.max(1, Math.min(Math.floor(limit), state.bank.balance));
+    timer.phase = 'running';
+    timer.limit = lim;
+    timer.elapsed = 0;
+    timer.lastTs = Date.now();
+    timer.handle = setInterval(timerTick, 1000);
+    renderTimer();
+    toast(lim + '분 타이머를 시작했어요' + (lim < limit ? ' (잔액 한도)' : ''));
+  }
+
+  function timerPause() {
+    if (timer.phase !== 'running') return;
+    timer.elapsed += Math.max(0, Date.now() - timer.lastTs);
+    timer.phase = 'paused';
+    clearInterval(timer.handle);
+    timer.handle = null;
+    renderTimer();
+  }
+
+  function timerResume() {
+    if (timer.phase !== 'paused') return;
+    timer.phase = 'running';
+    timer.lastTs = Date.now();
+    timer.handle = setInterval(timerTick, 1000);
+    renderTimer();
+  }
+
+  function timerTick() {
+    if (timer.phase === 'running') {
+      var now = Date.now();
+      timer.elapsed += Math.max(0, now - timer.lastTs);
+      timer.lastTs = now;
+      if (timer.elapsed >= timer.limit * 60000) { timerFinish(true); return; }
+    }
+    renderTimer();
+  }
+
+  function timerFinish(auto) {
+    if (timer.phase === 'idle') return;
+    clearInterval(timer.handle);
+    timer.handle = null;
+    var elapsed = timer.elapsed;
+    var limit = timer.limit;
+    timer.phase = 'idle';
+    timer.limit = 0;
+    timer.elapsed = 0;
+    var used = Math.min(limit, Math.max(1, Math.ceil(elapsed / 60000)));
+    var ok = deduct(used, '타이머 사용 (' + fmtClock(elapsed) + ')', 'use');
+    if (!ok) { renderTimer(); return; }
+    toast((auto ? '타이머 종료 · ' : '사용 종료 · ') + used + '분 차감했어요');
+    renderTimer();
+  }
+
+  /* ---------------- 학원 ---------------- */
+  function academiesFor(dow) {
+    return state.academies
+      .filter(function (a) { return a.days.indexOf(dow) >= 0; })
+      .slice()
+      .sort(function (a, b) { return (hmToMin(a.start) || 0) - (hmToMin(b.start) || 0); });
+  }
+
+  function nextAcademy(now) {
+    now = now || new Date();
+    var dow = now.getDay();
+    var cur = nowMin(now);
+    var today = academiesFor(dow);
+    var ongoing = today.filter(function (a) {
+      var s = hmToMin(a.start), e = hmToMin(a.end);
+      return s !== null && e !== null && s <= cur && cur < e;
+    })[0];
+    if (ongoing) return { kind: 'ongoing', item: ongoing };
+    var next = today.filter(function (a) { return hmToMin(a.start) > cur; })[0];
+    if (next) return { kind: 'next', item: next };
+    for (var i = 1; i <= 7; i++) {
+      var d = new Date(now);
+      d.setDate(d.getDate() + i);
+      var list = academiesFor(d.getDay());
+      if (list.length) return { kind: 'none', nextDay: { offset: i, item: list[0] } };
+    }
+    return { kind: 'none' };
+  }
+
+  /* ---------------- 일정 / 겹침 ---------------- */
+  function eventsOn(dateKey) {
+    return state.events
+      .filter(function (e) { return e.date === dateKey; })
+      .slice()
+      .sort(function (a, b) {
+        var am = a.time ? hmToMin(a.time) : 9999;
+        var bm = b.time ? hmToMin(b.time) : 9999;
+        return am - bm;
+      });
+  }
+
+  function overlapSet() {
+    var map = {};
+    state.events.forEach(function (e) {
+      if (LATE_TYPES.indexOf(e.type) < 0) return;
+      if (!map[e.date]) map[e.date] = {};
+      if (e.who === 'mom' || e.who === 'dad') map[e.date][e.who] = true;
+    });
+    var out = {};
+    Object.keys(map).forEach(function (k) {
+      if (map[k].mom && map[k].dad) out[k] = true;
+    });
+    return out;
+  }
+
+  function isOverlap(dateKey) { return !!overlapSet()[dateKey]; }
+
+  /* ---------------- 렌더: 헤더 ---------------- */
+  function renderHeader() {
+    var sel = $('userSelect');
+    if (sel) sel.value = session.user;
+    var badge = $('modeBadge');
+    if (session.user === 'child') {
+      badge.textContent = '차윤이 모드';
+      badge.className = 'mode-badge';
+    } else {
+      badge.textContent = WHO[session.user].label + ' 모드 · 관리자';
+      badge.className = 'mode-badge parent';
+    }
+    var chip = $('settingsModeChip');
+    if (chip) {
+      chip.textContent = session.user === 'child' ? '차윤이 모드' : WHO[session.user].label + ' 모드';
+      chip.className = 'chip ' + (session.user === 'child' ? 'mint' : 'amber');
+    }
+  }
+
+  /* ---------------- 렌더: 홈 ---------------- */
+  function renderHome() {
+    var b = state.bank;
+    $('homeBalance').innerHTML = b.balance + '<span class="u">분</span>';
+    $('homeBalance').classList.toggle('warn', b.balance <= 0);
+    $('homeBalanceSub').textContent = '하루 기본 ' + b.dailyBase + '분 · 남은 시간은 다음 날로 이월';
+
+    var used = todayUsedMinutes();
+    $('homeUsedToday').textContent = used + '분';
+    $('homeUsedTodaySub').textContent = b.balance > 0 ? '남은 잔액 ' + fmtMinutes(b.balance) : '잔액이 없어요';
+
+    var nx = nextAcademy();
+    var nameEl = $('homeNextAcademy'), subEl = $('homeNextAcademySub');
+    if (nx.kind === 'ongoing') {
+      nameEl.textContent = nx.item.name;
+      subEl.textContent = '진행 중 · ' + nx.item.end + ' 종료';
+    } else if (nx.kind === 'next') {
+      nameEl.textContent = nx.item.name;
+      subEl.textContent = nx.item.start + ' ~ ' + nx.item.end;
+    } else {
+      nameEl.textContent = '오늘 남은 학원 없음';
+      if (nx.nextDay) {
+        var when = nx.nextDay.offset === 1 ? '내일' : nx.nextDay.offset + '일 뒤';
+        subEl.textContent = when + ' ' + nx.nextDay.item.name + ' ' + nx.nextDay.item.start;
+      } else {
+        subEl.textContent = '등록된 학원이 없어요';
+      }
+    }
+
+    var now = new Date();
+    $('homeTodayChip').textContent = (now.getMonth() + 1) + '월 ' + now.getDate() + '일 (' + DOW[now.getDay()] + ')';
+    $('homeTodayList').innerHTML = todayScheduleHtml(now);
+
+    var meal = todayMeal();
+    var calChip = $('homeMealCal');
+    var mealBox = $('homeMeal');
+    if (meal) {
+      calChip.textContent = meal.cal || '';
+      calChip.className = 'chip mint';
+      var names = meal.dishes.map(function (d) { return d.name; });
+      mealBox.innerHTML = '<div class="meal-dishes">' + names.slice(0, 8).map(function (n) {
+        return '<span class="meal-dish">' + esc(n) + '</span>';
+      }).join('') + (names.length > 8 ? '<span class="meal-dish">+' + (names.length - 8) + '</span>' : '') + '</div>';
+    } else if (mealMeta.loading) {
+      calChip.textContent = '';
+      calChip.className = 'chip gray';
+      mealBox.innerHTML = '<p class="muted">급식 정보를 불러오는 중이에요…</p>';
+    } else {
+      calChip.textContent = '';
+      calChip.className = 'chip gray';
+      mealBox.innerHTML = '<p class="muted">' + esc(mealEmptyMessage()) + '</p>';
+    }
+  }
+
+  function todayScheduleHtml(now) {
+    var dow = now.getDay();
+    var acads = academiesFor(dow);
+    var evs = eventsOn(ymd(now));
+    var rows = [];
+    if (isOverlap(ymd(now))) {
+      rows.push('<div class="alert" style="margin-bottom:10px"><span class="a-ico">⚠️</span><div><b>일정 겹침</b> — 오늘 엄마·아빠 모두 저녁 일정이 있어요. 조정이 필요해요.</div></div>');
+    }
+    acads.forEach(function (a) {
+      rows.push(
+        '<li class="list-item"><div class="li-ico">🏫</div><div class="li-body">' +
+        '<p class="li-title">' + esc(a.name) + '</p>' +
+        '<p class="li-sub">' + esc(a.start) + ' ~ ' + esc(a.end) + (a.place ? ' · ' + esc(a.place) : '') + '</p>' +
+        '</div><div class="li-right"><span class="chip blue">학원</span></div></li>'
+      );
+    });
+    evs.forEach(function (e) {
+      var t = TYPES[e.type] || TYPES.etc;
+      var w = WHO[e.who] || WHO.both;
+      rows.push(
+        '<li class="list-item"><div class="li-ico">' + t.emoji + '</div><div class="li-body">' +
+        '<p class="li-title">' + esc(e.title || t.label) + '</p>' +
+        '<p class="li-sub">' + (e.time ? esc(e.time) + ' · ' : '') + esc(w.label) + ' ' + esc(t.label) + '</p>' +
+        '</div><div class="li-right"><span class="chip ' + t.tone + '">' + esc(t.label) + '</span></div></li>'
+      );
+    });
+    if (!rows.length) return '<div class="empty">오늘 등록된 일정이 없어요.<br>학원 시간표와 저녁약속을 확인해 보세요.</div>';
+    return '<ul class="list">' + rows.join('') + '</ul>';
+  }
+
+  /* ---------------- 렌더: 게임 ---------------- */
+  function renderGame() {
+    var b = state.bank;
+    $('gameBalance').innerHTML = b.balance + '<span class="u">분</span>';
+    $('gameSub').textContent = '하루 기본 ' + b.dailyBase + '분 · 이월 적립형';
+    $('gameTodayChip').textContent = '오늘 ' + todayUsedMinutes() + '분 사용';
+    $('gameBalanceChip').textContent = '잔액 ' + fmtMinutes(b.balance);
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-action="deduct"]'), function (btn) {
+      btn.disabled = b.balance < Number(btn.getAttribute('data-min'));
+    });
+    $('incentiveWhoChip').textContent = isParent() ? WHO[session.user].emoji + ' ' + meLabel() + ' 적립 중' : '🔒 잠금';
+    $('incentiveWhoChip').className = 'chip ' + (isParent() ? 'mint' : 'gray');
+
+    renderIncentive();
+    renderLedger();
+    renderTimer();
+  }
+
+  function renderIncentive() {
+    var box = $('incentiveBody');
+    if (!isParent()) {
+      box.innerHTML =
+        '<div class="lock-note"><span class="l-ico">🔒</span><div>' +
+        '<b>부모 모드에서만 적립·수정할 수 있어요.</b><br>' +
+        '차윤이 모드에서는 게임시간을 꺼내 쓰기만 할 수 있습니다. 아래에서 부모님 모드로 전환해 주세요.' +
+        '<div class="lock-actions">' +
+        '<button type="button" class="btn btn-sm btn-soft" data-action="parent" data-who="mom">👩 엄마 모드</button>' +
+        '<button type="button" class="btn btn-sm btn-soft" data-action="parent" data-who="dad">👨 아빠 모드</button>' +
+        '</div></div></div>';
+      return;
+    }
+    box.innerHTML =
+      '<div class="quick-chips">' +
+      '<button type="button" data-action="inc-quick" data-min="10" data-reason="숙제 완료">숙제 완료 +10분</button>' +
+      '<button type="button" data-action="inc-quick" data-min="10" data-reason="책 읽기">책 읽기 +10분</button>' +
+      '<button type="button" data-action="inc-quick" data-min="5" data-reason="집안일 도움">집안일 도움 +5분</button>' +
+      '<button type="button" data-action="inc-quick" data-min="20" data-reason="시험·받아쓰기 100점">시험 100점 +20분</button>' +
+      '</div>' +
+      '<form data-form="incentive" class="form-grid" novalidate>' +
+      '<div class="two-col">' +
+      '<div class="field"><label for="incMin">적립할 시간(분)</label>' +
+      '<input type="number" id="incMin" name="minutes" min="1" step="1" inputmode="numeric" value="10" required></div>' +
+      '<div class="field"><label for="incReason">사유</label>' +
+      '<input type="text" id="incReason" name="reason" maxlength="60" placeholder="예: 숙제 완료, 책 읽기" required></div>' +
+      '</div>' +
+      '<button type="submit" class="btn btn-primary">➕ 인센티브 적립</button>' +
+      '</form>' +
+      '<div class="row-inline" style="margin-top:12px">' +
+      '<div class="field" style="flex:1"><label for="adjMin">수동 조정 (− 입력 시 차감)</label>' +
+      '<input type="number" id="adjMin" step="1" inputmode="numeric" placeholder="예: -5 또는 15"></div>' +
+      '<button type="button" class="btn btn-ghost" data-action="adjust">조정 적용</button>' +
+      '</div>';
+  }
+
+  function renderLedger() {
+    var list = $('ledgerList');
+    var rows = state.bank.ledger.slice(0, 60);
+    $('ledgerCount').textContent = state.bank.ledger.length + '건';
+    if (!rows.length) {
+      list.innerHTML = '<li><div class="empty">아직 입출금 내역이 없어요.</div></li>';
+      return;
+    }
+    list.innerHTML = rows.map(function (e) {
+      var kind = entryKind(e);
+      var who = WHO[e.who] || { label: '가족', emoji: '👪' };
+      var plus = e.delta > 0;
+      var ico = kind === 'use' ? '🎮' : kind === 'bonus' ? '🎁' : kind === 'adjust' ? '🛠️' : '⚙️';
+      return '<li class="list-item">' +
+        '<div class="li-ico">' + ico + '</div>' +
+        '<div class="li-body"><p class="li-title">' + esc(e.reason) + '</p>' +
+        '<p class="li-sub">' + fmtShort(e.ts) + ' · ' + esc(who.label) + '</p></div>' +
+        '<div class="li-right"><div style="text-align:right">' +
+        '<p class="amount ' + (plus ? 'plus' : 'minus') + '">' + (plus ? '+' : '') + e.delta + '분</p>' +
+        '<p class="li-balance">잔액 ' + e.balanceAfter + '분</p>' +
+        '</div></div></li>';
+    }).join('');
+  }
+
+  function renderTimer() {
+    var active = timer.phase !== 'idle';
+    var remainMs = active ? Math.max(0, timer.limit * 60000 - timer.elapsed) : 0;
+    var disp = active ? fmtClock(remainMs) : '00:00';
+    var note = timer.phase === 'running' ? '사용 중' : timer.phase === 'paused' ? '일시정지' : '대기 중';
+    $('timerDisplay').innerHTML = disp + '<small>' + note + '</small>';
+
+    var btns = [];
+    if (timer.phase === 'running') {
+      btns.push('<button type="button" class="btn btn-sm btn-ghost" data-action="timer-pause">일시정지</button>');
+      btns.push('<button type="button" class="btn btn-sm btn-primary" data-action="timer-stop">종료 · 차감</button>');
+    } else if (timer.phase === 'paused') {
+      btns.push('<button type="button" class="btn btn-sm btn-soft" data-action="timer-resume">계속</button>');
+      btns.push('<button type="button" class="btn btn-sm btn-primary" data-action="timer-stop">종료 · 차감</button>');
+    }
+    $('timerButtons').innerHTML = btns.join('');
+
+    var presets = [10, 20, 30, 60].map(function (m) {
+      var dis = timer.phase !== 'idle' || state.bank.balance < m;
+      return '<button type="button" data-action="timer-start" data-min="' + m + '"' + (dis ? ' disabled style="opacity:.45"' : '') + '>' + m + '분</button>';
+    }).join('');
+    $('timerPresets').innerHTML = presets;
+
+    var pill = $('timerPill');
+    if (active) {
+      pill.hidden = false;
+      $('timerPillText').textContent = disp + (timer.phase === 'paused' ? ' (일시정지)' : ' 남음');
+    } else {
+      pill.hidden = true;
+    }
+  }
+
+  /* ---------------- 렌더: 시간표 ---------------- */
+  var PALETTE = ['#2f6bf6', '#12b886', '#f59f00', '#e64980', '#5c6bc0'];
+  function acadColor(id) {
+    var idx = 0;
+    for (var i = 0; i < state.academies.length; i++) if (state.academies[i].id === id) idx = i;
+    return PALETTE[idx % PALETTE.length];
+  }
+
+  function renderTimetable() {
+    var todayDow = new Date().getDay();
+    var html = '';
+    for (var d = 0; d < 7; d++) {
+      var list = academiesFor(d);
+      html += '<div class="wk-row' + (d === todayDow ? ' today' : '') + '">' +
+        '<div class="wk-dow">' + DOW[d] + '</div><div class="wk-items">';
+      if (!list.length) {
+        html += '<div class="wk-empty">—</div>';
+      } else {
+        html += list.map(function (a) {
+          return '<div class="wk-item" style="border-left-color:' + acadColor(a.id) + '">' + esc(a.name) +
+            '<span class="t">' + esc(a.start) + ' ~ ' + esc(a.end) + (a.place ? ' · ' + esc(a.place) : '') + '</span></div>';
+        }).join('');
+      }
+      html += '</div></div>';
+    }
+    $('weekGrid').innerHTML = html;
+    $('timetableTermChip').textContent = (new Date()).getMonth() + 1 + '월 · 이번 주';
+
+    var rows = state.academies.map(function (a) {
+      return '<li class="list-item">' +
+        '<div class="li-ico" style="color:' + acadColor(a.id) + '">🏫</div>' +
+        '<div class="li-body"><p class="li-title">' + esc(a.name) + '</p>' +
+        '<p class="li-sub">' + daysLabel(a.days) + ' · ' + esc(a.start) + '~' + esc(a.end) + (a.place ? ' · ' + esc(a.place) : '') + '</p></div>' +
+        '<div class="li-right">' + (isParent()
+          ? '<button type="button" class="icon-btn" data-action="academy-del" data-id="' + a.id + '" aria-label="' + esc(a.name) + ' 삭제">✕</button>'
+          : '<span class="chip gray">보기</span>') + '</div></li>';
+    });
+    $('academyList').innerHTML = rows.length ? rows.join('') : '<li><div class="empty">등록된 학원이 없어요.</div></li>';
+    $('academyCount').textContent = state.academies.length + '개';
+
+    if (!isParent()) {
+      $('academyFormArea').innerHTML =
+        '<div class="lock-note"><span class="l-ico">🔒</span><div>학원 일정 추가·삭제는 부모 모드에서 할 수 있어요.' +
+        '<div class="lock-actions">' +
+        '<button type="button" class="btn btn-sm btn-soft" data-action="parent" data-who="mom">👩 엄마 모드</button>' +
+        '<button type="button" class="btn btn-sm btn-soft" data-action="parent" data-who="dad">👨 아빠 모드</button>' +
+        '</div></div></div>';
+      return;
+    }
+    var days = [1, 2, 3, 4, 5, 6, 0].map(function (d) {
+      return '<label><input type="checkbox" name="days" value="' + d + '"><span>' + DOW[d] + '</span></label>';
+    }).join('');
+    $('academyFormArea').innerHTML =
+      '<form data-form="academy" class="form-grid">' +
+      '<div class="field"><label for="acadName">학원 이름</label>' +
+      '<input type="text" id="acadName" name="name" maxlength="30" placeholder="예: 수영, 영어학원" required></div>' +
+      '<div class="field"><span class="flabel">요일</span><div class="day-picker">' + days + '</div></div>' +
+      '<div class="two-col">' +
+      '<div class="field"><label for="acadStart">시작</label><input type="time" id="acadStart" name="start" value="16:00" required></div>' +
+      '<div class="field"><label for="acadEnd">종료</label><input type="time" id="acadEnd" name="end" value="18:00" required></div>' +
+      '</div>' +
+      '<div class="field"><label for="acadPlace">장소 (선택)</label>' +
+      '<input type="text" id="acadPlace" name="place" maxlength="30" placeholder="예: 3층 수영장"></div>' +
+      '<button type="submit" class="btn btn-primary">학원 일정 추가</button>' +
+      '</form>';
+  }
+
+  /* ---------------- 렌더: 저녁약속 캘린더 ---------------- */
+  function renderCalendar() {
+    var parts = state.ui.calMonth.split('-').map(Number);
+    var y = parts[0], m = parts[1];
+    if (!y || !m) { y = new Date().getFullYear(); m = new Date().getMonth() + 1; }
+    $('calTitle').textContent = y + '년 ' + m + '월';
+
+    var firstDow = new Date(y, m - 1, 1).getDay();
+    var daysInMonth = new Date(y, m, 0).getDate();
+    var grid = $('calGrid');
+    Array.prototype.forEach.call(grid.querySelectorAll('.cal-day'), function (n) { n.remove(); });
+
+    var overlaps = overlapSet();
+    var byDate = {};
+    state.events.forEach(function (e) {
+      if (!byDate[e.date]) byDate[e.date] = [];
+      byDate[e.date].push(e);
+    });
+    var todayKey = ymd(new Date());
+
+    for (var i = 0; i < firstDow; i++) {
+      var blank = document.createElement('div');
+      blank.className = 'cal-day empty';
+      grid.appendChild(blank);
+    }
+    for (var d = 1; d <= daysInMonth; d++) {
+      var key = y + '-' + pad2(m) + '-' + pad2(d);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cal-day';
+      btn.setAttribute('data-action', 'cal-select');
+      btn.setAttribute('data-date', key);
+      btn.setAttribute('aria-label', m + '월 ' + d + '일');
+      if (key === todayKey) btn.classList.add('today');
+      if (key === state.ui.selDate) btn.classList.add('sel');
+      if (overlaps[key]) btn.classList.add('overlap');
+      var evs = byDate[key] || [];
+      var whoSet = [];
+      evs.forEach(function (e) { if (whoSet.indexOf(e.who) < 0) whoSet.push(e.who); });
+      var inner = '<span class="num">' + d + '</span>';
+      if (overlaps[key]) inner += '<span class="warn">⚠️</span>';
+      inner += '<span class="dots">' + whoSet.slice(0, 3).map(function (w) {
+        return '<i class="dot ' + ((WHO[w] && WHO[w].dot) || 'both') + '"></i>';
+      }).join('') + '</span>';
+      btn.innerHTML = inner;
+      grid.appendChild(btn);
+    }
+
+    var selKey = state.ui.selDate;
+    var noteBox = $('calOverlapNote');
+    var monthOverlaps = Object.keys(overlaps).filter(function (k) { return k.indexOf(y + '-' + pad2(m)) === 0; });
+    if (overlaps[selKey]) {
+      noteBox.innerHTML = '<div class="alert"><span class="a-ico">⚠️</span><div><b>일정 겹침</b> — 이날 엄마와 아빠 모두 저녁약속/야근이 있어요.<br>한쪽 일정을 조정해 주세요.</div></div>';
+    } else if (monthOverlaps.length) {
+      noteBox.innerHTML = '<p class="form-hint">이번 달 겹치는 날 ' + monthOverlaps.length + '일 — ⚠️ 표시된 날짜를 확인해 주세요.</p>';
+    } else {
+      noteBox.innerHTML = '';
+    }
+
+    renderDayDetail();
+  }
+
+  function renderDayDetail() {
+    var key = state.ui.selDate;
+    var d = parseYmd(key);
+    $('dayDetailTitle').textContent = (d.getMonth() + 1) + '월 ' + d.getDate() + '일 (' + DOW[d.getDay()] + ')';
+    var chip = $('dayDetailChip');
+    var isToday = key === ymd(new Date());
+    chip.textContent = isToday ? '오늘' : '';
+    chip.style.display = isToday ? '' : 'none';
+
+    var evs = eventsOn(key);
+    var html = '';
+    if (isOverlap(key)) {
+      html += '<div class="alert" style="margin-bottom:10px"><span class="a-ico">⚠️</span><div><b>일정 겹침</b> — 엄마·아빠 모두 저녁 일정이 있어요.</div></div>';
+    }
+    if (evs.length) {
+      html += '<ul class="list">' + evs.map(function (e) {
+        var t = TYPES[e.type] || TYPES.etc;
+        var w = WHO[e.who] || WHO.both;
+        return '<li class="list-item">' +
+          '<div class="li-ico">' + t.emoji + '</div>' +
+          '<div class="li-body"><p class="li-title">' + esc(e.title || t.label) + '</p>' +
+          '<p class="li-sub">' + esc(w.emoji) + ' ' + esc(w.label) + ' · ' + esc(t.label) + (e.time ? ' · ' + esc(e.time) : '') + '</p></div>' +
+          '<div class="li-right">' + (isParent()
+            ? '<button type="button" class="icon-btn" data-action="event-del" data-id="' + e.id + '" aria-label="일정 삭제">✕</button>'
+            : '') + '</div></li>';
+      }).join('') + '</ul>';
+    } else {
+      html += '<div class="empty">이날 등록된 일정이 없어요.</div>';
+    }
+    var acads = academiesFor(d.getDay());
+    if (acads.length) {
+      html += '<p class="form-hint" style="margin-top:10px">이날 학원: ' + acads.map(function (a) {
+        return esc(a.name + ' ' + a.start + '~' + a.end);
+      }).join(', ') + '</p>';
+    }
+    $('dayDetailList').innerHTML = html;
+
+    var formArea = $('eventFormArea');
+    if (!isParent()) {
+      formArea.innerHTML =
+        '<div class="lock-note"><span class="l-ico">🔒</span><div>저녁약속·야근 등록은 부모 모드에서 할 수 있어요.' +
+        '<div class="lock-actions">' +
+        '<button type="button" class="btn btn-sm btn-soft" data-action="parent" data-who="mom">👩 엄마 모드</button>' +
+        '<button type="button" class="btn btn-sm btn-soft" data-action="parent" data-who="dad">👨 아빠 모드</button>' +
+        '</div></div></div>';
+      return;
+    }
+    var typeOpts = Object.keys(TYPES).map(function (k) {
+      return '<option value="' + k + '">' + TYPES[k].emoji + ' ' + TYPES[k].label + '</option>';
+    }).join('');
+    formArea.innerHTML =
+      '<form data-form="event" class="form-grid">' +
+      '<div class="field"><span class="flabel">누구 일정인가요?</span>' +
+      '<div class="segmented">' +
+      '<label><input type="radio" name="who" value="mom" checked><span>👩 엄마</span></label>' +
+      '<label><input type="radio" name="who" value="dad"><span>👨 아빠</span></label>' +
+      '<label><input type="radio" name="who" value="both"><span>👨‍👩‍👦 함께</span></label>' +
+      '</div></div>' +
+      '<div class="field"><label for="evType">종류</label><select id="evType" name="type">' + typeOpts + '</select></div>' +
+      '<div class="two-col">' +
+      '<div class="field"><label for="evDate">날짜</label><input type="date" id="evDate" name="date" value="' + esc(key) + '" required></div>' +
+      '<div class="field"><label for="evTime">시간 (선택)</label><input type="time" id="evTime" name="time"></div>' +
+      '</div>' +
+      '<div class="field"><label for="evTitle">내용</label>' +
+      '<input type="text" id="evTitle" name="title" maxlength="60" placeholder="예: 회식, 본사 야근, 가족 외식"></div>' +
+      '<button type="submit" class="btn btn-primary">일정 등록</button>' +
+      '</form>';
+  }
+
+  /* ---------------- 렌더: 학교 ---------------- */
+  function mealKey(d) { return ymdCompact(d); }
+
+  function weekDates(now) {
+    var base = now || new Date();
+    var dow = base.getDay();
+    var monday = new Date(base);
+    monday.setDate(base.getDate() - ((dow + 6) % 7));
+    var out = [];
+    for (var i = 0; i < 5; i++) {
+      var d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      out.push(d);
+    }
+    return out;
+  }
+
+  function parseMeal(row) {
+    var dishes = String(row.DDISH_NM || '').split(/<br\s*\/?>/i).map(function (s) { return s.trim(); }).filter(Boolean)
+      .map(function (s) {
+        var m = s.match(/^(.*?)\s*\(([\d.\s]+)\)\s*$/);
+        return m ? { name: m[1].trim(), allergy: m[2].trim() } : { name: s, allergy: '' };
+      });
+    var nut = [];
+    String(row.NTR_INFO || '').split(/<br\s*\/?>/i).forEach(function (line) {
+      if (line.indexOf(':') > 0) { nut.push(line.replace(':', ' ').replace(/\s+/g, ' ').trim()); }
+    });
+    var origin = String(row.ORPLC_INFO || '').split(/<br\s*\/?>/i).map(function (s) { return s.trim(); }).filter(Boolean);
+    return {
+      ymd: row.MLSV_YMD,
+      meal: row.MMEAL_SC_NM || '중식',
+      cal: row.CAL_INFO || '',
+      dishes: dishes,
+      nut: nut,
+      origin: origin,
+      fetchedAt: Date.now()
+    };
+  }
+
+  async function fetchMeals(fromYmd, toYmd) {
+    var url = NEIS_MEAL + '?Type=json&pIndex=1&pSize=100' +
+      '&ATPT_OFCDC_SC_CODE=' + encodeURIComponent(SCHOOL.office) +
+      '&SD_SCHUL_CODE=' + encodeURIComponent(SCHOOL.code) +
+      '&MLSV_FROM_YMD=' + fromYmd + '&MLSV_TO_YMD=' + toYmd;
+    var res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error('급식 API 응답 오류 (HTTP ' + res.status + ')');
+    var data = await res.json();
+    if (data.RESULT && data.RESULT.CODE && data.RESULT.CODE !== 'INFO-000') {
+      throw new Error(data.RESULT.MESSAGE || ('급식 정보 없음 (' + data.RESULT.CODE + ')'));
+    }
+    var rows = (data.mealServiceDietInfo && data.mealServiceDietInfo[1] && data.mealServiceDietInfo[1].row) || [];
+    return rows.map(parseMeal);
+  }
+
+  async function ensureWeekMeals(force) {
+    if (mealMeta.loading) return;
+    var days = weekDates(new Date());
+    var need = days.filter(function (d) { return force || !state.meals[mealKey(d)]; });
+    if (!need.length) { renderSchool(); renderHome(); return; }
+    mealMeta.loading = true;
+    mealMeta.error = null;
+    renderSchool();
+    renderHome();
+    try {
+      var rows = await fetchMeals(mealKey(days[0]), mealKey(days[4]));
+      var byKey = {};
+      rows.forEach(function (r) { byKey[r.ymd] = r; });
+      days.forEach(function (d) {
+        var k = mealKey(d);
+        if (byKey[k]) state.meals[k] = byKey[k];
+      });
+      days.forEach(function (d) {
+        var k = mealKey(d);
+        if (!state.meals[k]) state.meals[k] = { ymd: k, none: true, fetchedAt: Date.now() };
+      });
+      mealMeta.lastAt = Date.now();
+      save();
+    } catch (err) {
+      mealMeta.error = (err && err.message) ? err.message : '급식 정보를 불러오지 못했어요';
+    }
+    mealMeta.loading = false;
+    renderSchool();
+    renderHome();
+  }
+
+  function todayMeal() {
+    var rec = state.meals[mealKey(new Date())];
+    if (!rec || rec.none) return null;
+    return rec;
+  }
+
+  function mealEmptyMessage() {
+    if (mealMeta.error) return '급식 정보를 불러오지 못했어요. 아래 ‘새로고침’을 누르거나 학교 홈페이지를 확인해 주세요.';
+    var dow = new Date().getDay();
+    if (dow === 0 || dow === 6) return '오늘은 주말이라 급식이 없어요.';
+    return '오늘 급식 정보가 아직 없어요. (휴업일이거나 데이터가 아직 등록되지 않았어요)';
+  }
+
+  function mealCardHtml(rec) {
+    if (!rec) return '';
+    var dishes = rec.dishes.map(function (d) {
+      return '<span class="meal-dish">' + esc(d.name) + (d.allergy ? '<span class="alg">' + esc(d.allergy) + '</span>' : '') + '</span>';
+    }).join('');
+    return '<div class="meal-dishes">' + dishes + '</div>' +
+      (rec.cal ? '<p class="form-hint" style="margin-top:10px">🔥 ' + esc(rec.cal) + ' · 알레르기 번호는 각 메뉴 옆 숫자</p>' : '') +
+      (rec.origin && rec.origin.length
+        ? '<details class="more"><summary>원산지·영양 정보 보기</summary>' +
+          (rec.nut && rec.nut.length ? '<div class="nut">' + rec.nut.map(function (n) { return '<span class="chip gray">' + esc(n) + '</span>'; }).join('') + '</div>' : '') +
+          '<p>' + rec.origin.map(esc).join(' · ') + '</p></details>'
+        : '');
+  }
+
+  function renderSchool() {
+    var rec = todayMeal();
+    var box = $('todayMeal');
+    if (rec) {
+      box.innerHTML = mealCardHtml(rec);
+    } else if (mealMeta.loading) {
+      box.innerHTML = '<div class="empty">급식 정보를 불러오는 중이에요…</div>';
+    } else {
+      box.innerHTML = '<div class="empty">' + esc(mealEmptyMessage()) + '</div>';
+    }
+    var status = [];
+    if (mealMeta.loading) status.push('불러오는 중…');
+    else if (mealMeta.error) status.push('오류: ' + mealMeta.error);
+    else if (mealMeta.lastAt) status.push('마지막 업데이트 ' + fmtDateTime(mealMeta.lastAt));
+    else if (rec && rec.fetchedAt) status.push('마지막 업데이트 ' + fmtDateTime(rec.fetchedAt));
+    status.push('서울북성초 · 나이스 Open API');
+    $('mealStatus').textContent = status.join(' · ');
+
+    var days = weekDates(new Date());
+    $('mealWeekChip').textContent = (days[0].getMonth() + 1) + '/' + days[0].getDate() + ' ~ ' + (days[4].getMonth() + 1) + '/' + days[4].getDate();
+    $('weekMeal').innerHTML = days.map(function (d) {
+      var k = mealKey(d);
+      var r = state.meals[k];
+      var isToday = k === mealKey(new Date());
+      var label = '<div class="d">' + (d.getMonth() + 1) + '/' + d.getDate() + '<small>' + DOW[d.getDay()] + (isToday ? ' · 오늘' : '') + '</small></div>';
+      if (r && !r.none) {
+        return '<div class="meal-row"><div class="d">' + (d.getMonth() + 1) + '/' + d.getDate() + '<small>' + DOW[d.getDay()] + (isToday ? ' · 오늘' : '') + '</small></div>' +
+          '<div class="m">' + r.dishes.map(function (x) { return esc(x.name); }).join(' · ') + '</div></div>';
+      }
+      var msg = mealMeta.loading ? '불러오는 중…' : (r && r.none ? '급식 없음' : '—');
+      return '<div class="meal-row off">' + label + '<div class="m">' + msg + '</div></div>';
+    }).join('');
+
+    renderNotices();
+  }
+
+  function renderNotices() {
+    var list = $('noticeList');
+    var notices = state.notices.slice().sort(function (a, b) {
+      return String(b.date || '').localeCompare(String(a.date || ''));
+    });
+    $('noticeCount').textContent = notices.length + '건';
+    if (!notices.length) {
+      list.innerHTML = '<div class="empty">알림장이 아직 없어요.' + (isParent() ? '<br>아래에서 오늘 알림장을 직접 적어 두세요.' : '') + '</div>';
+    } else {
+      list.innerHTML = notices.map(function (n) {
+        var t = TYPES.etc;
+        return '<div class="notice">' +
+          '<div class="n-head"><span class="n-title">' + esc(n.title) + '</span>' +
+          '<span class="n-meta">' + esc(n.date || '') + ' · ' + esc(n.author || '선생님') + '</span>' +
+          (n.source === 'external' ? '<span class="chip gray">자동</span>' : '<span class="chip blue">직접 작성</span>') + '</div>' +
+          (n.body ? '<p class="n-body">' + esc(n.body) + '</p>' : '') +
+          (isParent() ? '<div class="n-foot"><button type="button" class="icon-btn" data-action="notice-del" data-id="' + n.id + '" aria-label="알림장 삭제">✕</button></div>' : '') +
+          '</div>';
+      }).join('');
+    }
+
+    var area = $('noticeFormArea');
+    if (!isParent()) {
+      area.innerHTML = '<div class="lock-note"><span class="l-ico">🔒</span><div>알림장 작성은 부모 모드에서 할 수 있어요.</div></div>';
+      return;
+    }
+    area.innerHTML =
+      '<form data-form="notice" class="form-grid">' +
+      '<div class="two-col">' +
+      '<div class="field"><label for="ntTitle">알림장 제목</label>' +
+      '<input type="text" id="ntTitle" name="title" maxlength="60" placeholder="예: 받아쓰기 12회 시험" required></div>' +
+      '<div class="field"><label for="ntDate">날짜</label><input type="date" id="ntDate" name="date" value="' + esc(ymd(new Date())) + '"></div>' +
+      '</div>' +
+      '<div class="field"><label for="ntBody">내용 (붙여넣기 가능)</label>' +
+      '<textarea id="ntBody" name="body" maxlength="2000" placeholder="준비물, 숙제, 행사 안내 등을 붙여넣으세요"></textarea></div>' +
+      '<button type="submit" class="btn btn-primary">알림장 등록</button>' +
+      '</form>';
+  }
+
+  /* ---------------- 렌더: 설정 ---------------- */
+  function renderSettings() {
+    $('settingsModeChip').textContent = session.user === 'child' ? '차윤이 모드' : WHO[session.user].label + ' 모드';
+    $('settingsModeChip').className = 'chip ' + (session.user === 'child' ? 'mint' : 'amber');
+    $('pinDesc').textContent = isParent()
+      ? '현재 PIN으로 변경할 수 있어요 · 기본값 0000'
+      : 'PIN 변경은 부모 모드에서만 가능해요';
+    var raw = '';
+    try { raw = localStorage.getItem(LS_KEY) || ''; } catch (e) { raw = ''; }
+    var kb = Math.max(0, Math.round(raw.length / 1024 * 10) / 10);
+    $('storageInfo').textContent =
+      '저장 크기 약 ' + kb + 'KB · 내역 ' + state.bank.ledger.length + '건 · 학원 ' + state.academies.length +
+      '개 · 일정 ' + state.events.length + '건 · 알림장 ' + state.notices.length + '건';
+    $('appVersion').textContent = 'v' + VERSION + ' · 시작 ' + String(state.createdAt || '').slice(0, 10);
+  }
+
+  function renderAll() {
+    renderHeader();
+    renderHome();
+    renderGame();
+    renderTimetable();
+    renderCalendar();
+    renderSchool();
+    renderSettings();
+  }
+
+  /* ---------------- 탭 ---------------- */
+  function setTab(tab) {
+    session.tab = tab;
+    Array.prototype.forEach.call(document.querySelectorAll('.view'), function (v) {
+      v.classList.toggle('active', v.getAttribute('data-view') === tab);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (t) {
+      t.classList.toggle('active', t.getAttribute('data-tab') === tab);
+    });
+    try { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; } catch (e) { }
+    if (tab === 'school' && !state.meals[mealKey(new Date())] && !mealMeta.loading) ensureWeekMeals(false);
+  }
+
+  /* ---------------- 폼 처리 ---------------- */
+  function onIncentiveSubmit(form) {
+    if (!requireParent()) return;
+    var min = Number(form.querySelector('[name=minutes]').value);
+    var reason = safeText(form.querySelector('[name=reason]').value);
+    if (!reason) { toast('적립 사유를 적어 주세요'); return; }
+    if (addBonus(min, reason)) toast('+' + min + '분 적립 · 잔액 ' + fmtMinutes(state.bank.balance));
+  }
+
+  function onAcademySubmit(form) {
+    if (!requireParent()) return;
+    var name = safeText(form.querySelector('[name=name]').value);
+    var start = form.querySelector('[name=start]').value;
+    var end = form.querySelector('[name=end]').value;
+    var place = safeText(form.querySelector('[name=place]').value);
+    var days = Array.prototype.slice.call(form.querySelectorAll('[name=days]:checked')).map(function (i) { return Number(i.value); });
+    if (!name) { toast('학원 이름을 적어 주세요'); return; }
+    if (!days.length) { toast('요일을 하나 이상 골라 주세요'); return; }
+    if (!start || !end) { toast('시작·종료 시간을 넣어 주세요'); return; }
+    if (hmToMin(end) <= hmToMin(start)) { toast('종료 시간이 시작보다 늦어야 해요'); return; }
+    state.academies.push({ id: uid(), name: name, days: days, start: start, end: end, place: place });
+    save();
+    renderAll();
+    toast(name + ' 일정을 추가했어요');
+  }
+
+  function onEventSubmit(form) {
+    if (!requireParent()) return;
+    var whoEl = form.querySelector('[name=who]:checked');
+    var who = whoEl ? whoEl.value : 'mom';
+    var type = form.querySelector('[name=type]').value;
+    var date = form.querySelector('[name=date]').value;
+    var time = form.querySelector('[name=time]').value;
+    var title = safeText(form.querySelector('[name=title]').value);
+    if (!date) { toast('날짜를 골라 주세요'); return; }
+    state.events.push({ id: uid(), who: who, type: TYPES[type] ? type : 'etc', date: date, time: time, title: title, createdAt: Date.now() });
+    state.ui.selDate = date;
+    state.ui.calMonth = date.slice(0, 7);
+    save();
+    renderAll();
+    if (isOverlap(date)) toast('⚠️ 등록했어요 — 엄마·아빠 일정이 겹칩니다');
+    else toast('일정을 등록했어요');
+  }
+
+  function onNoticeSubmit(form) {
+    if (!requireParent()) return;
+    var title = safeText(form.querySelector('[name=title]').value);
+    var date = form.querySelector('[name=date]').value || ymd(new Date());
+    var body = safeText(form.querySelector('[name=body]').value);
+    if (!title) { toast('알림장 제목을 적어 주세요'); return; }
+    state.notices.push({ id: uid(), source: 'local', title: title, date: date, body: body, author: meLabel(), createdAt: Date.now() });
+    save();
+    renderSchool();
+    toast('알림장을 등록했어요');
+  }
+
+  /* ---------------- 데이터 ---------------- */
+  function exportData() {
+    try {
+      var blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'family-home-backup-' + ymd(new Date()) + '.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 3000);
+      toast('JSON 파일로 내보냈어요');
+    } catch (e) {
+      toast('내보내기에 실패했어요: ' + e.message);
+    }
+  }
+
+  function importData(file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var parsed;
+      try {
+        parsed = JSON.parse(String(reader.result));
+      } catch (e) {
+        toast('JSON 파일을 읽을 수 없어요');
+        return;
+      }
+      askConfirm({
+        title: '데이터 가져오기',
+        body: '지금 이 기기의 데이터를 백업 파일 내용으로 덮어씁니다. 계속할까요?',
+        ok: '가져오기',
+        danger: true
+      }).then(function (ok) {
+        if (!ok) return;
+        state = normalize(defaultState(), parsed);
+        save();
+        renderAll();
+        toast('데이터를 복원했어요');
+      });
+    };
+    reader.onerror = function () { toast('파일을 읽지 못했어요'); };
+    reader.readAsText(file);
+  }
+
+  function resetData() {
+    askConfirm({
+      title: '데이터 초기화',
+      body: '게임시간 통장·시간표·일정·알림장이 모두 처음 상태로 돌아갑니다. 되돌릴 수 없어요.',
+      ok: '초기화',
+      danger: true
+    }).then(function (ok) {
+      if (!ok) return;
+      try { localStorage.removeItem(LS_KEY); } catch (e) { }
+      state = defaultState();
+      session.user = 'child';
+      save();
+      renderAll();
+      toast('초기 상태로 돌아갔어요');
+    });
+  }
+
+  function changePin() {
+    if (!isParent()) { toast('부모 모드에서만 PIN을 바꿀 수 있어요'); return; }
+    askPin({
+      title: '현재 PIN',
+      sub: '지금 사용하는 4자리 PIN을 입력해 주세요',
+      verify: function (v) { return v === state.pin; }
+    }).then(function (cur) {
+      if (cur === null) return;
+      return askPin({ title: '새 PIN', sub: '새로 사용할 4자리 숫자를 입력해 주세요' }).then(function (n1) {
+        if (n1 === null) return;
+        return askPin({ title: '새 PIN 확인', sub: '한 번 더 입력해 주세요' }).then(function (n2) {
+          if (n2 === null) return;
+          if (n1 !== n2) { toast('새 PIN이 서로 달라요. 다시 시도해 주세요.'); return; }
+          state.pin = n1;
+          save();
+          renderAll();
+          toast('PIN을 ' + n1 + ' 로 바꿨어요');
+        });
+      });
+    });
+  }
+
+  /* ---------------- 외부 알림장 (notices.json) ---------------- */
+  async function loadExternalNotices() {
+    try {
+      var res = await fetch('notices.json', { cache: 'no-store' });
+      if (!res.ok) return;
+      var data = await res.json();
+      var arr = Array.isArray(data) ? data : (data && Array.isArray(data.notices) ? data.notices : []);
+      if (!arr.length) return;
+      var ext = arr.map(function (n, i) {
+        return {
+          id: 'ext-' + (n.id || i),
+          source: 'external',
+          title: safeText(n.title) || '알림장',
+          date: safeText(n.date) || ymd(new Date()),
+          body: safeText(n.body || n.content || ''),
+          author: safeText(n.author || n.writer || '선생님')
+        };
+      });
+      state.notices = state.notices.filter(function (n) { return n.source !== 'external'; }).concat(ext);
+      save();
+      renderSchool();
+    } catch (e) {
+      /* notices.json 이 없으면 조용히 넘어갑니다 (file:// 로 열 때도 동일) */
+    }
+  }
+
+  /* ---------------- 이벤트 ---------------- */
+  document.addEventListener('click', function (e) {
+    var keyBtn = e.target.closest ? e.target.closest('[data-key]') : null;
+    if (keyBtn) { handleKey(keyBtn.getAttribute('data-key')); return; }
+
+    var btn = e.target.closest ? e.target.closest('[data-action]') : null;
+    if (!btn) return;
+    var action = btn.getAttribute('data-action');
+
+    if (action !== 'modal-cancel') e.preventDefault();
+
+    switch (action) {
+      case 'goto':
+        setTab(btn.getAttribute('data-tab'));
+        break;
+      case 'parent':
+        askParentMode(btn.getAttribute('data-who'));
+        break;
+      case 'deduct': {
+        var m = Number(btn.getAttribute('data-min'));
+        if (deduct(m, '게임 시간 사용', 'use')) toast(m + '분 사용 · 남은 ' + fmtMinutes(state.bank.balance));
+        break;
+      }
+      case 'toggle-custom': {
+        var row = $('customDeductRow');
+        row.hidden = !row.hidden;
+        if (!row.hidden) $('customMin').focus();
+        break;
+      }
+      case 'deduct-custom': {
+        var v = Number($('customMin').value);
+        if (deduct(v, '게임 시간 사용', 'use')) {
+          $('customMin').value = '';
+          toast(v + '분 사용 · 남은 ' + fmtMinutes(state.bank.balance));
+        }
+        break;
+      }
+      case 'timer-start':
+        timerStart(Number(btn.getAttribute('data-min')) || 30);
+        break;
+      case 'timer-pause':
+        timerPause();
+        break;
+      case 'timer-resume':
+        timerResume();
+        break;
+      case 'timer-stop':
+        timerFinish(false);
+        break;
+      case 'inc-quick': {
+        if (!requireParent()) break;
+        var qm = Number(btn.getAttribute('data-min'));
+        var qr = btn.getAttribute('data-reason');
+        if (addBonus(qm, qr)) toast(qr + ' +' + qm + '분 적립 · 잔액 ' + fmtMinutes(state.bank.balance));
+        break;
+      }
+      case 'adjust': {
+        if (!requireParent()) break;
+        var adj = Number($('adjMin').value);
+        if (!adj) { toast('조정할 분을 입력해 주세요'); break; }
+        if (adj > 0) {
+          if (addBonus(adj, '부모 수동 조정')) toast('+' + adj + '분 조정했어요');
+        } else {
+          if (state.bank.balance < -adj) { toast('잔액보다 많이 차감할 수 없어요'); break; }
+          state.bank.balance += adj;
+          pushLedger('adjust', adj, '부모 수동 조정');
+          save();
+          renderAll();
+          toast(adj + '분 조정했어요');
+        }
+        $('adjMin').value = '';
+        break;
+      }
+      case 'academy-del': {
+        if (!requireParent()) break;
+        var aid = btn.getAttribute('data-id');
+        var acad = state.academies.filter(function (a) { return a.id === aid; })[0];
+        if (!acad) break;
+        askConfirm({ title: '학원 삭제', body: '“' + acad.name + '” 일정을 삭제할까요?', ok: '삭제', danger: true }).then(function (ok) {
+          if (!ok) return;
+          state.academies = state.academies.filter(function (a) { return a.id !== aid; });
+          save();
+          renderAll();
+          toast('삭제했어요');
+        });
+        break;
+      }
+      case 'cal-prev':
+      case 'cal-next': {
+        var p = state.ui.calMonth.split('-').map(Number);
+        var dt = new Date(p[0], p[1] - 1 + (action === 'cal-next' ? 1 : -1), 1);
+        state.ui.calMonth = monthKey(dt);
+        renderCalendar();
+        break;
+      }
+      case 'cal-today':
+        state.ui.calMonth = monthKey(new Date());
+        state.ui.selDate = ymd(new Date());
+        renderCalendar();
+        break;
+      case 'cal-select':
+        state.ui.selDate = btn.getAttribute('data-date');
+        state.ui.calMonth = state.ui.selDate.slice(0, 7);
+        renderCalendar();
+        break;
+      case 'event-del': {
+        if (!requireParent()) break;
+        var eid = btn.getAttribute('data-id');
+        state.events = state.events.filter(function (x) { return x.id !== eid; });
+        save();
+        renderAll();
+        toast('일정을 삭제했어요');
+        break;
+      }
+      case 'notice-del': {
+        if (!requireParent()) break;
+        var nid = btn.getAttribute('data-id');
+        askConfirm({ title: '알림장 삭제', body: '이 알림장을 지울까요?', ok: '삭제', danger: true }).then(function (ok) {
+          if (!ok) return;
+          state.notices = state.notices.filter(function (x) { return x.id !== nid; });
+          save();
+          renderSchool();
+          toast('삭제했어요');
+        });
+        break;
+      }
+      case 'meal-refresh':
+        ensureWeekMeals(true);
+        toast('급식 정보를 새로 불러오는 중이에요');
+        break;
+      case 'pin-change':
+        changePin();
+        break;
+      case 'export':
+        exportData();
+        break;
+      case 'import':
+        $('importFile').click();
+        break;
+      case 'reset':
+        resetData();
+        break;
+      case 'modal-cancel':
+        finishModal(null);
+        break;
+      default:
+        break;
+    }
+  });
+
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (!t) return;
+    if (t.id === 'userSelect') { switchUser(t.value); return; }
+    if (t.name === 'days' && t.type === 'checkbox') {
+      var lbl = t.closest('label');
+      if (lbl) lbl.classList.toggle('on', t.checked);
+    }
+    if (t.id === 'importFile' && t.files && t.files[0]) {
+      importData(t.files[0]);
+      t.value = '';
+    }
+  });
+
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    if (!form || !form.getAttribute) return;
+    var kind = form.getAttribute('data-form');
+    if (!kind) return;
+    e.preventDefault();
+    if (kind === 'incentive') { onIncentiveSubmit(form); return; }
+    if (kind === 'academy') { onAcademySubmit(form); return; }
+    if (kind === 'event') { onEventSubmit(form); return; }
+    if (kind === 'notice') { onNoticeSubmit(form); return; }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modalReq) { finishModal(null); return; }
+    if (!modalReq || modalReq.type !== 'pin') return;
+    if (/^[0-9]$/.test(e.key)) { handleKey(e.key); }
+    else if (e.key === 'Backspace') { handleKey('del'); }
+  });
+
+  $('confirmOk').addEventListener('click', function () {
+    if (modalReq && modalReq.type === 'confirm') finishModal(true);
+  });
+
+  /* ---------------- 시작 ---------------- */
+  function tickHome() { renderHome(); }
+
+  (function init() {
+    renderAll();
+    setTab('home');
+    ensureWeekMeals(false);
+    loadExternalNotices();
+    setInterval(tickHome, 60000);
+  })();
+})();
+</script>
+</body>
+</html>
