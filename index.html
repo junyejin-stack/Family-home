@@ -85,6 +85,21 @@ h1.title .home{font-weight:900}
   background:var(--blue-soft);color:var(--blue-ink);font-size:12.5px;font-weight:800;white-space:nowrap;
 }
 .mode-badge.parent{background:var(--amber-soft);color:#b25c00}
+.sync-line{
+  display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:5px 11px;border-radius:999px;
+  background:#fff;border:1px solid var(--line);color:var(--ink-3);
+  font-size:11.5px;font-weight:800;letter-spacing:-.1px;white-space:nowrap;
+}
+.sync-line .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3);flex:0 0 auto}
+.sync-line.on{background:var(--mint-soft);border-color:#c6f0e1;color:#0b7c5c}
+.sync-line.on .dot{background:var(--mint)}
+.sync-line.off{background:var(--amber-soft);border-color:#ffe3b8;color:#a35a00}
+.sync-line.off .dot{background:var(--amber)}
+.sync-line.wait{background:var(--blue-soft);border-color:#d5e3ff;color:var(--blue-ink)}
+.sync-line.wait .dot{background:var(--blue);animation:syncPulse 1.2s ease-in-out infinite}
+.sync-line.err{background:var(--red-soft);border-color:#ffd4d4;color:#c92a2a}
+.sync-line.err .dot{background:var(--red)}
+@keyframes syncPulse{0%,100%{opacity:.3}50%{opacity:1}}
 
 /* ---------- views & cards ---------- */
 .view{display:none}
@@ -422,6 +437,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
       </div>
       <span class="mode-badge" id="modeBadge">자녀 모드</span>
     </div>
+    <div class="sync-line wait" id="syncState"><span class="dot"></span>가족 클라우드 연결 중…</div>
   </header>
 
   <main>
@@ -640,7 +656,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
 
       <article class="card">
         <header class="card-head"><h2>💾 데이터 백업 · 복원</h2></header>
-        <p class="muted">게임시간 통장, 시간표, 저녁약속, 알림장이 모두 이 브라우저(localStorage)에 저장됩니다. JSON으로 내려받아 다른 기기에서 복원할 수 있어요.</p>
+        <p class="muted">게임시간 통장, 시간표, 저녁약속, 알림장은 이 기기(localStorage)와 가족 클라우드(Firebase) 양쪽에 저장됩니다. JSON으로 내려받아 백업할 수도 있어요.</p>
         <div class="btn-row" style="margin-top:12px">
           <button class="btn btn-soft" data-action="export">JSON 내보내기</button>
           <button class="btn btn-ghost" data-action="import">JSON 가져오기</button>
@@ -651,26 +667,13 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
       </article>
 
       <article class="card">
-        <header class="card-head"><h2>☁️ 동기화 (준비 중)</h2><span class="chip amber">Coming soon</span></header>
-        <p class="muted">지금은 기기 안에만 저장됩니다. 가족이 각자 폰에서 같은 데이터를 보려면 아래 중 하나로 연결하면 됩니다.</p>
-        <ul class="list" style="margin-top:12px">
-          <li class="list-item">
-            <div class="li-ico">🔥</div>
-            <div class="li-body"><p class="li-title">Firebase Realtime Database</p><p class="li-sub">무료 Spark 요금제 · 실시간 반영 · 설정 간단</p></div>
-            <div class="li-right"><span class="chip gray">미연결</span></div>
-          </li>
-          <li class="list-item">
-            <div class="li-ico">🟢</div>
-            <div class="li-body"><p class="li-title">Supabase</p><p class="li-sub">Postgres 기반 · 무료 티어 · 이메일 로그인</p></div>
-            <div class="li-right"><span class="chip gray">미연결</span></div>
-          </li>
-          <li class="list-item">
-            <div class="li-ico">🐙</div>
-            <div class="li-body"><p class="li-title">GitHub JSON 동기화</p><p class="li-sub">이 저장소에 data.json 커밋 · GitHub Pages로 즉시 반영</p></div>
-            <div class="li-right"><span class="chip gray">미연결</span></div>
-          </li>
-        </ul>
-        <p class="form-hint" style="margin-top:12px">연결 전까지는 ‘JSON 내보내기 → 다른 기기에서 가져오기’로 데이터를 옮길 수 있어요.</p>
+        <header class="card-head"><h2>☁️ 실시간 동기화</h2><span class="chip mint" id="syncChip">연결됨</span></header>
+        <p class="muted">가족 모두의 폰이 하나의 데이터를 봅니다. 한 기기에서 게임시간·저녁약속·시간표·알림장을 고치면 다른 기기에 새로고침 없이 바로 반영해요.</p>
+        <div id="syncInfo" style="margin-top:10px"></div>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn btn-soft" data-action="sync-now">지금 동기화</button>
+        </div>
+        <p class="form-hint" style="margin-top:10px">인터넷이 끊겨도 이 기기(localStorage)에 먼저 저장되고, 다시 연결되면 자동으로 맞춰집니다.</p>
       </article>
 
       <article class="card">
@@ -721,6 +724,8 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
     </div>
   </div>
 </div>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js" defer></script>
 <script>
 (function () {
   'use strict';
@@ -854,6 +859,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
     } catch (e) {
       toast('저장에 실패했어요. 브라우저 저장 공간을 확인해 주세요.');
     }
+    scheduleSync();
   }
 
   var state = loadState();
@@ -861,6 +867,198 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
   var timer = { phase: 'idle', limit: 0, elapsed: 0, lastTs: 0, handle: null };
   var modalReq = null;
   var mealMeta = { loading: false, error: null, lastAt: null };
+
+  /* =========================================================
+     실시간 동기화 — Firebase Realtime Database
+     한 기기에서 고친 내용이 가족 모두의 화면에 새로고침 없이 반영됩니다.
+     · localStorage 는 오프라인 백업으로 계속 사용
+     · DB 가 비어 있으면 이 기기 데이터로 처음 한 번만 채움
+     ========================================================= */
+  var FB_CONFIG = {
+    apiKey: 'AIzaSyAkMnAUD76EMKBY6EmbebgVipOa4LxdwbM',
+    authDomain: 'our-family-home-bc818.firebaseapp.com',
+    databaseURL: 'https://our-family-home-bc818-default-rtdb.asia-southeast1.firebasedatabase.app',
+    projectId: 'our-family-home-bc818',
+    storageBucket: 'our-family-home-bc818.firebasestorage.app',
+    messagingSenderId: '407390534884',
+    appId: '1:407390534884:web:457081f9b1fcbffd3c80f1'
+  };
+  var FB_NODE = 'family';
+  var SYNC_KEYS = ['pin', 'bank', 'academies', 'events', 'notices'];
+
+  var sync = { loaded: false, connected: false, primed: false, error: null, lastAt: null, sdkFail: false };
+  var syncRef = null;
+  var syncSeen = {};       /* key -> 마지막으로 DB와 맞춰진 값(JSON) */
+  var syncPending = {};    /* key -> 보내는 중인 값(JSON) */
+  var syncTimer = null;
+  var syncTries = 0;
+  var applyingRemote = false;
+
+  function toArray(v) {
+    if (Array.isArray(v)) return v;
+    if (v && typeof v === 'object') {
+      return Object.keys(v).sort(function (a, b) {
+        var x = Number(a), y = Number(b);
+        if (isFinite(x) && isFinite(y)) return x - y;
+        return String(a) < String(b) ? -1 : 1;
+      }).map(function (k) { return v[k]; });
+    }
+    return [];
+  }
+
+  function fromRemote(key, raw) {
+    if (key === 'pin') return (typeof raw === 'string' && /^\d{4}$/.test(raw)) ? raw : state.pin;
+    if (key === 'bank') {
+      var b = (raw && typeof raw === 'object') ? raw : {};
+      var bal = Number(b.balance), base = Number(b.dailyBase);
+      return {
+        dailyBase: isFinite(base) ? base : 0,
+        balance: isFinite(bal) ? bal : 0,
+        ledger: toArray(b.ledger).filter(function (e) { return e && typeof e === 'object'; })
+      };
+    }
+    return toArray(raw);
+  }
+
+  function syncText() {
+    if (sync.error) return { tone: 'err', text: '동기화 오류 · 기기에 저장됨' };
+    if (sync.sdkFail) return { tone: 'off', text: '기기에만 저장 (오프라인)' };
+    if (!sync.loaded) return { tone: 'wait', text: '가족 클라우드 연결 중…' };
+    if (!sync.connected) return { tone: 'off', text: '오프라인 · 기기에 저장했어요' };
+    if (!sync.primed) return { tone: 'wait', text: '가족 클라우드 연결 중…' };
+    return { tone: 'on', text: '실시간 동기화 연결됨' };
+  }
+
+  function paintSync() {
+    var t = syncText();
+    var el = $('syncState');
+    if (el) {
+      el.className = 'sync-line ' + t.tone;
+      el.innerHTML = '<span class="dot"></span>' + esc(t.text);
+      el.setAttribute('title', sync.lastAt ? '마지막 동기화 ' + fmtDateTime(sync.lastAt) : '가족 클라우드와 연결하는 중');
+    }
+    var chip = $('syncChip');
+    if (chip) {
+      chip.textContent = t.tone === 'on' ? '연결됨' : (t.tone === 'wait' ? '연결 중' : (t.tone === 'err' ? '오류' : '오프라인'));
+      chip.className = 'chip ' + (t.tone === 'on' ? 'mint' : (t.tone === 'err' ? 'red' : (t.tone === 'wait' ? 'blue' : 'gray')));
+    }
+    var box = $('syncInfo');
+    if (box) {
+      box.innerHTML =
+        '<div class="set-row"><div><p class="s-label">연결 상태</p><p class="s-desc">' + esc(t.text) +
+        (sync.lastAt ? ' · 마지막 ' + esc(fmtSummary(sync.lastAt)) : '') + '</p></div></div>' +
+        '<div class="set-row"><div><p class="s-label">동기화 항목</p><p class="s-desc">게임시간 통장 · 학원 시간표 · 저녁약속 · 알림장 · 부모 PIN</p></div></div>' +
+        '<div class="set-row"><div><p class="s-label">저장소</p><p class="s-desc">Firebase Realtime Database · ' + esc(FB_CONFIG.projectId) + '</p></div></div>';
+    }
+  }
+
+  function fmtSummary(ts) {
+    var d = new Date(ts);
+    var now = new Date();
+    var hm = pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+    if (ymd(d) === ymd(now)) return hm;
+    return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + hm;
+  }
+
+  function pushAll(force) {
+    if (!syncRef || !sync.primed || applyingRemote) return;
+    var pushed = 0;
+    SYNC_KEYS.forEach(function (key) {
+      var payload = (state[key] === undefined) ? null : state[key];
+      var json = JSON.stringify(payload);
+      if (!force && syncSeen[key] === json) return;
+      syncSeen[key] = json;
+      syncPending[key] = json;
+      pushed++;
+      syncRef.child(key).set(payload).then(function () {
+        if (syncPending[key] === json) delete syncPending[key];
+      }).catch(function (err) {
+        if (syncPending[key] === json) delete syncPending[key];
+        if (syncSeen[key] === json) delete syncSeen[key];
+        sync.error = (err && err.message) || 'write failed';
+        paintSync();
+      });
+    });
+    if (pushed) { sync.lastAt = Date.now(); paintSync(); }
+  }
+
+  function scheduleSync() {
+    if (!sync.loaded || applyingRemote) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(function () { pushAll(false); }, 250);
+  }
+
+  function applyRemote(val) {
+    var data = (val && typeof val === 'object') ? val : {};
+    var changed = false;
+    SYNC_KEYS.forEach(function (key) {
+      if (!(key in data) || data[key] === null) return;
+      var next = fromRemote(key, data[key]);
+      var json = JSON.stringify(next);
+      syncSeen[key] = json;
+      /* 이 기기가 막 보낸 값의 응답(직전 값)이면 잠시 무시 */
+      if (syncPending[key] && syncPending[key] !== json) return;
+      if (JSON.stringify(state[key]) !== json) { state[key] = next; changed = true; }
+    });
+    try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) { }
+    if (changed) {
+      applyingRemote = true;
+      try { renderAll(); } finally { applyingRemote = false; }
+    }
+  }
+
+  function onSnapshot(snap) {
+    var val = snap.val();
+    sync.error = null;
+    if (!sync.primed) {
+      sync.primed = true;
+      var hasData = false;
+      SYNC_KEYS.forEach(function (key) { if (val && val[key] !== undefined && val[key] !== null) hasData = true; });
+      if (!hasData) {
+        /* 첫 연결이고 클라우드가 비어 있으면 이 기기 데이터를 올린다 */
+        pushAll(true);
+      } else {
+        applyRemote(val);
+        var missing = SYNC_KEYS.filter(function (key) { return !val || val[key] === undefined || val[key] === null; });
+        if (missing.length) {
+          missing.forEach(function (key) { delete syncSeen[key]; });
+          setTimeout(function () { pushAll(false); }, 0);
+        }
+      }
+    } else {
+      applyRemote(val);
+    }
+    sync.lastAt = Date.now();
+    paintSync();
+  }
+
+  function startSync() {
+    if (!window.firebase || !window.firebase.database) {
+      if (syncTries++ < 40) { setTimeout(startSync, 400); } else { sync.sdkFail = true; }
+      paintSync();
+      return;
+    }
+    try {
+      var app = (window.firebase.apps && window.firebase.apps.length) ? window.firebase.app() : window.firebase.initializeApp(FB_CONFIG);
+      var db = app.database();
+      syncRef = db.ref(FB_NODE);
+      sync.loaded = true;
+      db.ref('.info/connected').on('value', function (s) {
+        sync.connected = !!s.val();
+        if (sync.connected && sync.error === 'offline') sync.error = null;
+        paintSync();
+      });
+      syncRef.on('value', function (snap) {
+        try { onSnapshot(snap); } catch (e) { sync.error = e.message || 'apply failed'; paintSync(); }
+      }, function (err) {
+        sync.error = (err && err.message) || 'read failed';
+        paintSync();
+      });
+    } catch (e) {
+      sync.error = e.message || 'init failed';
+    }
+    paintSync();
+  }
 
   function isParent() { return session.user === 'mom' || session.user === 'dad'; }
   function meLabel() { return (WHO[session.user] || WHO.child).label; }
@@ -1763,6 +1961,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
       '저장 크기 약 ' + kb + 'KB · 내역 ' + state.bank.ledger.length + '건 · 학원 ' + state.academies.length +
       '개 · 일정 ' + state.events.length + '건 · 알림장 ' + state.notices.length + '건';
     $('appVersion').textContent = 'v' + VERSION + ' · 시작 ' + String(state.createdAt || '').slice(0, 10);
+    paintSync();
   }
 
   function renderAll() {
@@ -2081,6 +2280,11 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
         });
         break;
       }
+      case 'sync-now':
+        if (!sync.loaded) { toast('동기화가 아직 준비되지 않았어요. 잠시 후 다시 시도해 주세요.'); return; }
+        pushAll(true);
+        toast(sync.connected ? '가족 클라우드와 맞췄어요' : '오프라인 상태예요. 기기에 저장했어요');
+        break;
       case 'meal-refresh':
         ensureWeekMeals(true);
         toast('급식 정보를 새로 불러오는 중이에요');
@@ -2150,6 +2354,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
     setTab('home');
     ensureWeekMeals(false);
     loadExternalNotices();
+    startSync();
     setInterval(tickHome, 60000);
   })();
 })();
