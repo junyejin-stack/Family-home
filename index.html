@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f2f4f8">
-<meta name="description" content="차윤이 가족 홈 — 게임시간 통장, 학원 시간표, 저녁약속, 학교 급식·알림장">
-<title>🏠 차윤이 가족 HOME</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="description" content="우리 가족 홈 — 게임시간 통장, 학원 시간표, 저녁약속, 급식·알림장">
+<title>🏠 우리 가족 HOME</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='88'%3E%F0%9F%8F%A0%3C/text%3E%3C/svg%3E">
 <style>
 :root{
@@ -404,8 +405,8 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
     <div class="hdr-row">
       <div>
         <p class="eyebrow">OUR FAMILY SPACE</p>
-        <h1 class="title">🏠 차윤이 가족 <span class="home">HOME</span></h1>
-        <p class="school-line">북성초등학교 · 4학년 7반</p>
+        <h1 class="title">🏠 우리 가족 <span class="home">HOME</span></h1>
+        <p class="school-line">우리 가족 생활 대시보드</p>
       </div>
       <div class="family-badge" aria-hidden="true">👨‍👩‍👦</div>
     </div>
@@ -413,13 +414,13 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
       <label class="lbl" for="userSelect">사용자</label>
       <div class="select-wrap">
         <select id="userSelect" aria-label="사용자 선택">
-          <option value="child">👦 차윤이</option>
+          <option value="child">👦 자녀</option>
           <option value="mom">👩 엄마</option>
           <option value="dad">👨 아빠</option>
         </select>
         <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
       </div>
-      <span class="mode-badge" id="modeBadge">차윤이 모드</span>
+      <span class="mode-badge" id="modeBadge">자녀 모드</span>
     </div>
   </header>
 
@@ -480,7 +481,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
 
       <article class="card">
         <header class="card-head">
-          <h2>👦 차윤이 · 시간 꺼내 쓰기</h2>
+          <h2>👦 자녀 · 시간 꺼내 쓰기</h2>
           <span class="chip mint" id="gameBalanceChip">잔액 150분</span>
         </header>
         <div class="btn-row" style="margin-bottom:10px">
@@ -591,7 +592,6 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
         <div id="todayMeal"></div>
         <div class="school-links">
           <a class="btn btn-sm btn-ghost" href="https://open.neis.go.kr" target="_blank" rel="noopener">나이스 급식 정보</a>
-          <a class="btn btn-sm btn-ghost" href="http://seoulbuksung.sen.es.kr" target="_blank" rel="noopener">북성초 홈페이지</a>
         </div>
         <p class="form-hint" id="mealStatus" style="margin-top:10px"></p>
       </article>
@@ -606,7 +606,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
 
       <article class="card">
         <header class="card-head">
-          <h2>📝 알림장 · 4학년 7반</h2>
+          <h2>📝 알림장</h2>
           <span class="chip gray" id="noticeCount">0건</span>
         </header>
         <div id="noticeList"></div>
@@ -631,7 +631,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
         </div>
         <div class="set-row">
           <div>
-            <p class="s-label">차윤이 모드 잠금</p>
+            <p class="s-label">자녀 모드 잠금</p>
             <p class="s-desc">인센티브 적립·수정은 부모 모드(PIN)에서만 가능합니다.</p>
           </div>
           <span class="chip mint">적용 중</span>
@@ -675,7 +675,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
 
       <article class="card">
         <header class="card-head"><h2>ℹ️ 앱 정보</h2></header>
-        <div class="set-row"><div><p class="s-label">학교</p><p class="s-desc">서울북성초등학교 (서울특별시교육청) · 나이스 코드 B10 / 7031127</p></div></div>
+        <div class="set-row"><div><p class="s-label">급식 학교 정보</p><p class="s-desc">설정된 학교의 나이스 학교 코드로 급식 정보를 조회합니다.</p></div></div>
         <div class="set-row"><div><p class="s-label">급식 데이터</p><p class="s-desc">나이스 교육정보 개방 포털 Open API (키 없이 조회)</p></div></div>
         <div class="set-row"><div><p class="s-label">버전</p><p class="s-desc" id="appVersion">v1.0</p></div></div>
       </article>
@@ -726,16 +726,16 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
   'use strict';
 
   /* =========================================================
-     차윤이 가족 HOME — 단일 파일 웹앱
+     우리 가족 HOME — 단일 파일 웹앱
      데이터는 이 브라우저의 localStorage 에만 저장됩니다.
      ========================================================= */
 
   var VERSION = '1.0';
   var LS_KEY = 'chaYunFamilyHome.v1';
 
-  /* 서울북성초등학교(서울특별시교육청) — 나이스 Open API 조회로 확인
-     ATPT_OFCDC_SC_CODE=B10 / SD_SCHUL_CODE=7031127 (2026-11-17 확인) */
-  var SCHOOL = { office: 'B10', code: '7031127', name: '서울북성초등학교' };
+  /* 급식 조회용 나이스 학교 코드 (ATPT_OFCDC_SC_CODE / SD_SCHUL_CODE)
+     화면·문서에 학교명이 드러나지 않도록 코드 값만 둡니다. */
+  var SCHOOL = { office: 'B10', code: '7031127' };
   var NEIS_MEAL = 'https://open.neis.go.kr/hub/mealServiceDietInfo';
 
   var DOW = ['일', '월', '화', '수', '목', '금', '토'];
@@ -749,7 +749,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
     mom: { label: '엄마', emoji: '👩', dot: 'mom' },
     dad: { label: '아빠', emoji: '👨', dot: 'dad' },
     both: { label: '함께', emoji: '👨‍👩‍👦', dot: 'both' },
-    child: { label: '차윤이', emoji: '👦', dot: 'child' },
+    child: { label: '자녀', emoji: '👦', dot: 'child' },
     system: { label: '시스템', emoji: '⚙️', dot: 'system' }
   };
   var LATE_TYPES = ['dinner', 'overtime'];
@@ -958,7 +958,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
     if (next === 'child') {
       session.user = 'child';
       renderAll();
-      toast('차윤이 모드로 돌아왔어요');
+      toast('자녀 모드로 돌아왔어요');
       return;
     }
     var who = next === 'mom' ? '엄마' : '아빠';
@@ -1156,7 +1156,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
     if (sel) sel.value = session.user;
     var badge = $('modeBadge');
     if (session.user === 'child') {
-      badge.textContent = '차윤이 모드';
+      badge.textContent = '자녀 모드';
       badge.className = 'mode-badge';
     } else {
       badge.textContent = WHO[session.user].label + ' 모드 · 관리자';
@@ -1164,7 +1164,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
     }
     var chip = $('settingsModeChip');
     if (chip) {
-      chip.textContent = session.user === 'child' ? '차윤이 모드' : WHO[session.user].label + ' 모드';
+      chip.textContent = session.user === 'child' ? '자녀 모드' : WHO[session.user].label + ' 모드';
       chip.className = 'chip ' + (session.user === 'child' ? 'mint' : 'amber');
     }
   }
@@ -1278,7 +1278,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
       box.innerHTML =
         '<div class="lock-note"><span class="l-ico">🔒</span><div>' +
         '<b>부모 모드에서만 적립·수정할 수 있어요.</b><br>' +
-        '차윤이 모드에서는 게임시간을 꺼내 쓰기만 할 수 있습니다. 아래에서 부모님 모드로 전환해 주세요.' +
+        '자녀 모드에서는 게임시간을 꺼내 쓰기만 할 수 있습니다. 아래에서 부모님 모드로 전환해 주세요.' +
         '<div class="lock-actions">' +
         '<button type="button" class="btn btn-sm btn-soft" data-action="parent" data-who="mom">👩 엄마 모드</button>' +
         '<button type="button" class="btn btn-sm btn-soft" data-action="parent" data-who="dad">👨 아빠 모드</button>' +
@@ -1654,7 +1654,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
   }
 
   function mealEmptyMessage() {
-    if (mealMeta.error) return '급식 정보를 불러오지 못했어요. 아래 ‘새로고침’을 누르거나 학교 홈페이지를 확인해 주세요.';
+    if (mealMeta.error) return '급식 정보를 불러오지 못했어요. 아래 ‘새로고침’을 눌러 주세요.';
     var dow = new Date().getDay();
     if (dow === 0 || dow === 6) return '오늘은 주말이라 급식이 없어요.';
     return '오늘 급식 정보가 아직 없어요. (휴업일이거나 데이터가 아직 등록되지 않았어요)';
@@ -1689,7 +1689,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
     else if (mealMeta.error) status.push('오류: ' + mealMeta.error);
     else if (mealMeta.lastAt) status.push('마지막 업데이트 ' + fmtDateTime(mealMeta.lastAt));
     else if (rec && rec.fetchedAt) status.push('마지막 업데이트 ' + fmtDateTime(rec.fetchedAt));
-    status.push('서울북성초 · 나이스 Open API');
+    status.push('나이스 Open API');
     $('mealStatus').textContent = status.join(' · ');
 
     var days = weekDates(new Date());
@@ -1751,7 +1751,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
 
   /* ---------------- 렌더: 설정 ---------------- */
   function renderSettings() {
-    $('settingsModeChip').textContent = session.user === 'child' ? '차윤이 모드' : WHO[session.user].label + ' 모드';
+    $('settingsModeChip').textContent = session.user === 'child' ? '자녀 모드' : WHO[session.user].label + ' 모드';
     $('settingsModeChip').className = 'chip ' + (session.user === 'child' ? 'mint' : 'amber');
     $('pinDesc').textContent = isParent()
       ? '현재 PIN으로 변경할 수 있어요 · 기본값 0000'
