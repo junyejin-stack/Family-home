@@ -941,6 +941,7 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
     if (sync.error) return { tone: 'err', text: '동기화 오류 · 기기에 저장됨' };
     if (sync.sdkFail) return { tone: 'off', text: '기기에만 저장 (오프라인)' };
     if (!sync.loaded) return { tone: 'wait', text: '가족 클라우드 연결 중…' };
+    if (!sync.connected && !sync.primed) return { tone: 'wait', text: '가족 클라우드 연결 중…' };
     if (!sync.connected) return { tone: 'off', text: '오프라인 · 기기에 저장했어요' };
     if (!sync.primed) return { tone: 'wait', text: '가족 클라우드 연결 중…' };
     return { tone: 'on', text: '실시간 동기화 연결됨' };
@@ -2361,7 +2362,17 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
 
   document.addEventListener('focusout', function () {
     if (!pendingRender) return;
-    setTimeout(function () { if (pendingRender && !userIsTyping()) renderRemote(); }, 0);
+    setTimeout(function () {
+      if (!pendingRender) return;
+      if (userIsTyping()) return;
+      var el = document.activeElement;
+      /* 버튼을 누르려는 중이면 등록/저장이 끝난 뒤에 그린다 */
+      if (el && el.tagName === 'BUTTON') {
+        setTimeout(function () { if (pendingRender && !userIsTyping()) renderRemote(); }, 700);
+        return;
+      }
+      renderRemote();
+    }, 400);
   });
 
   document.addEventListener('keydown', function (e) {
