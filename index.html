@@ -960,10 +960,11 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
     return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + hm;
   }
 
-  function pushAll(force) {
+  function pushAll(force, only) {
     if (!syncRef || !sync.primed || applyingRemote) return;
     var pushed = 0;
     SYNC_KEYS.forEach(function (key) {
+      if (only && only.indexOf(key) < 0) return;
       var payload = (state[key] === undefined) ? null : state[key];
       var json = JSON.stringify(payload);
       if (!force && syncSeen[key] === json) return;
@@ -988,12 +989,20 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
     syncTimer = setTimeout(function () { pushAll(false); }, 250);
   }
 
-  function applyRemote(val) {
+  function applyRemote(val, keepLocal) {
     var data = (val && typeof val === 'object') ? val : {};
+    var keep = keepLocal || [];
+    var LIST_KEYS = ['academies', 'events', 'notices'];
     var changed = false;
     SYNC_KEYS.forEach(function (key) {
-      if (!(key in data) || data[key] === null) return;
-      var next = fromRemote(key, data[key]);
+      if (keep.indexOf(key) >= 0) return;
+      var raw = (key in data) ? data[key] : undefined;
+      if (raw === null || raw === undefined) {
+        /* 빈 배열은 DB에 저장되지 않으므로, 목록 항목이 사라진 것은 빈 목록으로 본다 */
+        if (LIST_KEYS.indexOf(key) < 0) return;
+        raw = [];
+      }
+      var next = fromRemote(key, raw);
       var json = JSON.stringify(next);
       syncSeen[key] = json;
       /* 이 기기가 막 보낸 값의 응답(직전 값)이면 잠시 무시 */
@@ -1018,12 +1027,13 @@ details.more p{font-size:12px;color:var(--ink-3);font-weight:600;margin-top:8px;
         /* 첫 연결이고 클라우드가 비어 있으면 이 기기 데이터를 올린다 */
         pushAll(true);
       } else {
-        applyRemote(val);
         var missing = SYNC_KEYS.filter(function (key) { return !val || val[key] === undefined || val[key] === null; });
         if (missing.length) {
           missing.forEach(function (key) { delete syncSeen[key]; });
-          setTimeout(function () { pushAll(false); }, 0);
+          pushAll(false, missing);
         }
+        applyingRemote = true;
+        try { applyRemote(val, missing); } finally { applyingRemote = false; }
       }
     } else {
       applyRemote(val);
